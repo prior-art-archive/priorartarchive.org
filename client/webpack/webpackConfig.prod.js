@@ -64,7 +64,7 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: '[name].[contenthash].css',
 		}),
-		new ManifestPlugin(),
+		new ManifestPlugin({ publicPath: '/dist/' }),
 	],
 	optimization: {
 		minimizer: [
