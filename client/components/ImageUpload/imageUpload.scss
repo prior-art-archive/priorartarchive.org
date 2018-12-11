@@ -1,0 +1,41 @@
+.image-upload-component {
+	margin-bottom: 15px;
+	.upload-button, .upload-button.bp3-disabled, .image-wrapper {
+		display: inline-flex;
+		margin-top: 0.5em;
+		svg {
+			height: 30px;
+			width: 30px;
+			opacity: 0.75;
+		}
+	}
+	.upload-button, .upload-button.bp3-disabled {
+		background-color: #F0F0F0;
+	}
+	.image-wrapper {
+		position: relative;
+		cursor: pointer;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		&:not(.accent-background) {
+			background-color: #F0F0F0;
+		}
+	}
+	input {
+		display: none;
+	}
+	.image-options {
+		vertical-align: top;
+		margin: 0.5em 0em;
+		display: inline-block;
+		width: 30px;
+		.bp3-button {
+			display: block;
+		}
+	}
+	.helper-text {
+		color: #6e6e6e;
+		font-size: 12px;
+	}
+}

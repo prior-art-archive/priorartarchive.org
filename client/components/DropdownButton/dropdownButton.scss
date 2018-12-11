@@ -1,0 +1,11 @@
+.dropdown-button {
+	.bp3-icon {
+		vertical-align: top;
+		margin-right: 3px;
+	}
+	&:disabled {
+		span {
+			pointer-events: none;
+		}
+	}
+}

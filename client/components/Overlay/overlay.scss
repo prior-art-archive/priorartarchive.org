@@ -1,0 +1,21 @@
+.overlay-wrapper {
+	left: 5vw;
+	width: 90vw;
+	top: 50px;
+	margin-bottom: 50px;
+}
+
+.pub-overlay-enter, .pub-overlay-appear {
+	opacity: 0;
+}
+.pub-overlay-enter-active, .pub-overlay-appear-active {
+	opacity: 1;
+	transition: 200ms cubic-bezier(0.4, 1, 0.75, 0.9) opacity;
+}
+.pub-overlay-exit {
+	opacity: 1;
+}
+.pub-overlay-exit-active {
+	opacity: 0;
+	transition: 200ms cubic-bezier(0.4, 1, 0.75, 0.9) opacity;
+}
