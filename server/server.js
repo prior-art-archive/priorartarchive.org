@@ -85,6 +85,7 @@ app.use('/service-worker.js', express.static('static/service-worker.js'));
 app.use('/favicon.png', express.static('static/favicon.png'));
 app.use('/favicon.ico', express.static('static/favicon.png'));
 app.use('/robots.txt', express.static('static/robots.txt'));
+app.use('/opensearch.xml', express.static('static/opensearch.xml'));
 
 
 /* ------------- */
