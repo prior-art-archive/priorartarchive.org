@@ -14,7 +14,14 @@ class Landing extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			query: '',
 		};
+		this.handleSearch = this.handleSearch.bind(this);
+	}
+
+	handleSearch(evt) {
+		evt.preventDefault();
+		window.location.href = `/search?q=${this.state.query}`;
 	}
 
 	render() {
@@ -23,11 +30,21 @@ class Landing extends React.Component {
 				<PageWrapper
 					loginData={this.props.loginData}
 					locationData={this.props.locationData}
+					hideFooter={true}
 				>
 					<div className="container">
 						<div className="row">
 							<div className="col-12">
-								<input placeholder="search" />
+								<h1>Prior Art Archive</h1>
+								<form onSubmit={this.handleSearch}>
+									<input
+										placeholder="Search..."
+										value={this.state.query}
+										onChange={(evt)=> {
+											this.setState({ query: evt.target.value });
+										}}
+									/>
+								</form>
 							</div>
 						</div>
 					</div>

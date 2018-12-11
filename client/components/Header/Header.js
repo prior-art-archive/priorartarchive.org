@@ -35,15 +35,15 @@ class Header extends Component {
 				<div className="container">
 					<div className="row">
 						<div className="col-12">
-
 							{/* App Logo - do not show on homepage */}
-							{!isHome &&
-								<div className="headerItems headerItemsLeft">
+
+							<div className="headerItems headerItemsLeft">
+								{!isHome &&
 									<a href="/" className="headerLogo bp3-button bp3-large bp3-minimal">
 										Prior Art Archive
 									</a>
-								</div>
-							}
+								}
+							</div>
 
 							<div className="headerItems headerItemsRight">
 								{/* User avatar and menu */}

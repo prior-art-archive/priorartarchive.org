@@ -25,7 +25,7 @@ class Search extends Component {
 					locationData={this.props.locationData}
 					hideFooter={true}
 				>
-					<div className="container narrow">
+					<div className="container">
 						<div className="row">
 							<div className="col-12">
 								<h1>Search</h1>

@@ -22,7 +22,7 @@ const NoMatch = (props)=> {
 			>
 				<NonIdealState
 					title="Page Not Found"
-					visual="path-search"
+					icon="path-search"
 					description={props.loginData.id
 						? null // TODO: eventually, put text suggesting a search
 						: 'If you believe there should be a page at this URL, it may be private. Try logging in.'

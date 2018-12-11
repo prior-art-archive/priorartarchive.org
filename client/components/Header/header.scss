@@ -2,31 +2,30 @@
 	background-color: #F0F0F0;
 	padding: 10px 0px;
 	border-bottom: 1px solid #CCC;
+	.col-12 {
+		display: flex;
+	}
 	.headerItems {
 		height: 40px;
 		align-items: center;
+		white-space: nowrap;
 	}
 	.headerItemsLeft {
-		float: left;
+		flex: 1 1 auto;
 		position: relative;
 		left: -15px;
 	}
 	.headerItemsRight {
-		float: right;
 		position: relative;
 		right: -15px;
 	}
 	.headerLogo.bp3-button.bp3-minimal {
 		height: 40px;
-		display: block;
 		color: #4286f4;
 		font-size: 30px;
 		font-weight: 800;
 		letter-spacing: 1px;
-		img {
-			height: 28px;
-			max-width: 100%;
-		}
+	    line-height: 30px;
 	}
 	.bp3-button.bp3-intent-primary {
 		margin-left: 1em;
