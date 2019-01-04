@@ -55,8 +55,8 @@ class Header extends Component {
 										content={
 											<Menu>
 												<li>
-													<a href={`/user/${this.props.loginData.slug}`} className="bp3-menu-item bp3-popover-dismiss">
-														<div>{this.props.loginData.fullName}</div>
+													<a href={`/organization/${this.props.loginData.slug}`} className="bp3-menu-item bp3-popover-dismiss">
+														<div>{this.props.loginData.name}</div>
 														<div className="subtext">View Profile</div>
 													</a>
 												</li>
@@ -71,7 +71,7 @@ class Header extends Component {
 									>
 										<Button className="bp3-button bp3-large bp3-minimal avatar-button">
 											<Avatar
-												userInitials={this.props.loginData.initials}
+												userInitials={this.props.loginData.name.substring(0, 1)}
 												userAvatar={this.props.loginData.avatar}
 												width={30}
 											/>

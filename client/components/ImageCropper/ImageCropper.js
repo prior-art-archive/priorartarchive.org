@@ -41,7 +41,7 @@ class ImageCropper extends Component {
 			isUploading: false,
 			scale: 1.5,
 		});
-		this.props.onUploaded(`https://assets.pubpub.org/${filename}`, this.state.blob);
+		this.props.onUploaded(`https://assets.priorartarchive.org/${filename}`, this.state.blob);
 	}
 
 	handleScaleChange(val) {

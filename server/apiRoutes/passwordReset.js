@@ -1,30 +1,30 @@
 import Promise from 'bluebird';
 import app from '../server';
-import { User } from '../models';
+import { Organization } from '../models';
 import { generateHash } from '../utilities';
 import { sendPasswordResetEmail } from '../emailHelpers';
 
 
 app.post('/api/password-reset', (req, res)=> {
-	User.findOne({
-		where: { email: req.body.email }
-	}).then((user)=> {
-		if (!user) { throw new Error('User doesn\'t exist'); }
+	Organization.findOne({
+		where: { slug: req.body.slug }
+	}).then((organization)=> {
+		if (!organization) { throw new Error('Organization doesn\'t exist'); }
 
 		const updateData = {
 			resetHash: generateHash(),
 			resetHashExpiration: Date.now() + (1000 * 60 * 60 * 24) // Expires in 24 hours.
 		};
-		return User.update(updateData, {
-			where: { id: user.id },
+		return Organization.update(updateData, {
+			where: { id: organization.id },
 			returning: true,
 			individualHooks: true
 		});
-	}).then((updatedUserData)=> {
-		const updatedUser = updatedUserData[1][0];
+	}).then((updatedOrganizationData)=> {
+		const updatedOrganization = updatedOrganizationData[1][0];
 		return sendPasswordResetEmail({
-			toEmail: updatedUser.email,
-			resetUrl: `https://${req.hostname}/password-reset/${updatedUser.resetHash}/${updatedUser.slug}`,
+			toEmail: updatedOrganization.email,
+			resetUrl: `https://${req.hostname}/password-reset/${updatedOrganization.resetHash}/${updatedOrganization.slug}`,
 		});
 	})
 	.then(()=> {
@@ -37,24 +37,24 @@ app.post('/api/password-reset', (req, res)=> {
 });
 
 app.put('/api/password-reset', (req, res)=> {
-	const user = req.user || {};
+	const organization = req.user || {};
 	const resetHash = req.body.resetHash;
 	const slug = req.body.slug;
 	const currentTime = Date.now();
 
-	const whereQuery = user.id
-		? { id: user.id }
+	const whereQuery = organization.id
+		? { id: organization.id }
 		: { resetHash: resetHash, slug: slug };
 
-	User.findOne({
+	organization.findOne({
 		where: whereQuery,
 	})
-	.then((userData)=> {
-		if (!userData) { throw new Error('User doesn\'t exist'); }
-		if (!user.id && resetHash && userData.resetHashExpiration < currentTime) { throw new Error('Hash is expired'); }
+	.then((organizationData)=> {
+		if (!organizationData) { throw new Error('organization doesn\'t exist'); }
+		if (!organization.id && resetHash && organizationData.resetHashExpiration < currentTime) { throw new Error('Hash is expired'); }
 
 		/* Promisify the setPassword function, and use .update to match API convention */
-		const setPassword = Promise.promisify(userData.setPassword, { context: userData });
+		const setPassword = Promise.promisify(organizationData.setPassword, { context: organizationData });
 		return setPassword(req.body.password);
 	})
 	.then((passwordResetData)=> {
@@ -65,7 +65,7 @@ app.put('/api/password-reset', (req, res)=> {
 			resetHashExpiration: currentTime,
 			passwordDigest: 'sha512',
 		};
-		return User.update(updateData, {
+		return Organization.update(updateData, {
 			where: whereQuery,
 		});
 	})

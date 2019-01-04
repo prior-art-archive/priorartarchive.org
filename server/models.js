@@ -60,6 +60,9 @@ const Organization = sequelize.define('Organization', {
 		}
 	},
 	website: { type: Sequelize.TEXT },
+	isAuthenticated: { type: Sequelize.BOOLEAN },
+	resetHashExpiration: { type: Sequelize.DATE },
+	resetHash: { type: Sequelize.TEXT },
 	hash: { type: Sequelize.TEXT, allowNull: false },
 	salt: { type: Sequelize.TEXT, allowNull: false },
 });
@@ -88,6 +91,22 @@ const Assertion = sequelize.define('Assertion', {
 	cid: { type: Sequelize.TEXT },
 });
 
+const Signup = sequelize.define('Signup', {
+	id: id,
+	email: {
+		type: Sequelize.TEXT,
+		allowNull: false,
+		unique: true,
+		validate: {
+			isEmail: true,
+			isLowercase: true,
+		}
+	},
+	hash: { type: Sequelize.TEXT },
+	count: { type: Sequelize.INTEGER },
+	completed: { type: Sequelize.BOOLEAN },
+});
+
 /* Organizations have many Documents. Documents belong to a single Organization */
 Organization.hasMany(Document, { onDelete: 'CASCADE', as: 'documents', foreignKey: 'organizationId' });
 Document.belongsTo(Organization, { onDelete: 'CASCADE', as: 'organization', foreignKey: 'organizationId' });
@@ -96,6 +115,7 @@ const db = {
 	Organization: Organization,
 	Document: Document,
 	Assertion: Assertion,
+	Signup: Signup,
 };
 
 db.sequelize = sequelize;

@@ -53,7 +53,7 @@ class ImageUpload extends Component {
 	}
 
 	onUploadFinish(evt, index, type, filename) {
-		const newImageUrl = `https://assets.pubpub.org/${filename}`;
+		const newImageUrl = `https://assets.priorartarchive.org/${filename}`;
 		this.setState({
 			uploading: false,
 		});

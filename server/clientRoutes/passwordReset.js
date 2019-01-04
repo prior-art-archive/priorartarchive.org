@@ -3,20 +3,20 @@ import React from 'react';
 import PasswordReset from 'containers/PasswordReset/PasswordReset';
 import Html from '../Html';
 import app from '../server';
-import { User } from '../models';
+import { Organization } from '../models';
 import { renderToNodeStream, getInitialData, handleErrors, generateMetaComponents } from '../utilities';
 
 app.get(['/password-reset', '/password-reset/:resetHash/:slug'], (req, res, next)=> {
-	const findUser = User.findOne({
+	const findOrganization = Organization.findOne({
 		where: { slug: req.params.slug },
 	});
 
-	return Promise.all([getInitialData(req), findUser])
-	.then(([initialData, userData])=> {
+	return Promise.all([getInitialData(req), findOrganization])
+	.then(([initialData, organizationData])=> {
 		let hashIsValid = true;
-		if (!userData) { hashIsValid = false; }
-		if (userData && userData.resetHash !== req.params.resetHash) { hashIsValid = false; }
-		if (userData && userData.resetHashExpiration < Date.now()) { hashIsValid = false; }
+		if (!organizationData) { hashIsValid = false; }
+		if (organizationData && organizationData.resetHash !== req.params.resetHash) { hashIsValid = false; }
+		if (organizationData && organizationData.resetHashExpiration < Date.now()) { hashIsValid = false; }
 
 		const newInitialData = {
 			...initialData,

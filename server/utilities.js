@@ -27,7 +27,7 @@ export const getInitialData = (req)=> {
 		id: user.id,
 		initials: user.initials,
 		slug: user.slug,
-		fullName: user.fullName,
+		name: user.name,
 		avatar: user.avatar,
 	};
 

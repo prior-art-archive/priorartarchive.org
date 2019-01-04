@@ -1,4 +1,4 @@
-.user-edit-component {
+.organization-edit-component {
 	.col-12 {
 		position: relative;
 	}
@@ -17,7 +17,7 @@
 	}
 }
 @media only screen and (max-width: 720px) {  /* Used to be 45em */
-	.user-edit-component {
+	.organization-edit-component {
 		input, textarea {
 			max-width: none;
 		}

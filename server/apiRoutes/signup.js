@@ -1,6 +1,6 @@
 import app from '../server';
 import { generateHash } from '../utilities';
-import { sequelize, Signup, User } from '../models';
+import { sequelize, Signup, Organization } from '../models';
 import { sendSignupEmail } from '../emailHelpers';
 
 app.post('/api/signup', (req, res)=> {
@@ -8,11 +8,11 @@ app.post('/api/signup', (req, res)=> {
 	/* If there are no records to update, then we create a new one. */
 	/* If this fails, it is because the email must be unique and it is already used */
 	const email = req.body.email.toLowerCase().trim();
-	User.findOne({
+	Organization.findOne({
 		where: { email: email }
 	})
-	.then((userData)=> {
-		if (userData) { throw new Error('Email already used'); }
+	.then((organizationData)=> {
+		if (organizationData) { throw new Error('Email already used'); }
 
 		return Signup.update({ count: sequelize.literal('count + 1') }, {
 			where: { email: email, completed: false }
@@ -35,7 +35,7 @@ app.post('/api/signup', (req, res)=> {
 	.then((signUpData)=> {
 		return sendSignupEmail({
 			toEmail: signUpData.email,
-			signupUrl: `https://${req.hostname}/user/create/${signUpData.hash}`
+			signupUrl: `https://${req.hostname}/organization/create/${signUpData.hash}`
 		});
 	})
 	.then(()=> {

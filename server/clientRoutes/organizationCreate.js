@@ -1,12 +1,12 @@
 import Promise from 'bluebird';
 import React from 'react';
-import UserCreate from 'containers/UserCreate/UserCreate';
+import OrganizationCreate from 'containers/OrganizationCreate/OrganizationCreate';
 import Html from '../Html';
 import app from '../server';
 import { Signup } from '../models';
 import { renderToNodeStream, getInitialData, handleErrors, generateMetaComponents } from '../utilities';
 
-app.get('/user/create/:hash', (req, res, next)=> {
+app.get('/organization/create/:hash', (req, res, next)=> {
 	const getSignup = Signup.findOne({
 		where: { hash: req.params.hash, completed: false },
 		attributes: ['email', 'hash']
@@ -20,15 +20,15 @@ app.get('/user/create/:hash', (req, res, next)=> {
 		};
 		return renderToNodeStream(res,
 			<Html
-				chunkName="UserCreate"
+				chunkName="OrganizationCreate"
 				initialData={newInitialData}
 				headerComponents={generateMetaComponents({
 					initialData: newInitialData,
-					title: 'Create New user · Prior Art Archive',
+					title: 'Create New Organization · Prior Art Archive',
 					unlisted: true,
 				})}
 			>
-				<UserCreate {...newInitialData} />
+				<OrganizationCreate {...newInitialData} />
 			</Html>
 		);
 	})

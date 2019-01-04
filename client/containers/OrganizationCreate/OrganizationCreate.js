@@ -9,7 +9,7 @@ import PageWrapper from 'components/PageWrapper/PageWrapper';
 import Icon from 'components/Icon/Icon';
 import { hydrateWrapper, apiFetch } from 'utilities';
 
-require('./userCreate.scss');
+require('./organizationCreate.scss');
 
 const propTypes = {
 	loginData: PropTypes.object.isRequired,
@@ -17,33 +17,25 @@ const propTypes = {
 	signupData: PropTypes.object.isRequired,
 };
 
-class UserCreate extends Component {
+class OrganizationCreate extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			postUserIsLoading: false,
-			postUserError: undefined,
-			subscribed: false,
-			firstName: '',
-			lastName: '',
+			postOrganizationIsLoading: false,
+			postOrganizationError: undefined,
+			// subscribed: false,
+			name: '',
+			slug: '',
 			password: '',
-			title: '',
 			bio: '',
 			avatar: undefined,
-			location: '',
 			website: '',
-			orcid: '',
-			github: '',
-			twitter: '',
-			facebook: '',
-			googleScholar: '',
 		};
 		this.onCreateSubmit = this.onCreateSubmit.bind(this);
-		this.onSubscribedChange = this.onSubscribedChange.bind(this);
-		this.onFirstNameChange = this.onFirstNameChange.bind(this);
-		this.onLastNameChange = this.onLastNameChange.bind(this);
+		// this.onSubscribedChange = this.onSubscribedChange.bind(this);
+		this.onNameChange = this.onNameChange.bind(this);
+		this.onSlugChange = this.onSlugChange.bind(this);
 		this.onPasswordChange = this.onPasswordChange.bind(this);
-		this.onTitleChange = this.onTitleChange.bind(this);
 		this.onBioChange = this.onBioChange.bind(this);
 		this.onAvatarChange = this.onAvatarChange.bind(this);
 	}
@@ -51,56 +43,45 @@ class UserCreate extends Component {
 	onCreateSubmit(evt) {
 		evt.preventDefault();
 
-		this.setState({ postUserIsLoading: true, postUserError: undefined });
-		return apiFetch('/api/users', {
+		this.setState({ postOrganizationIsLoading: true, postOrganizationError: undefined });
+		return apiFetch('/api/organizations', {
 			method: 'POST',
 			body: JSON.stringify({
 				email: this.props.signupData.email,
 				hash: this.props.signupData.hash,
-				subscribed: this.state.subscribed,
-				firstName: this.state.firstName,
-				lastName: this.state.lastName,
+				// subscribed: this.state.subscribed,
+				name: this.state.name,
+				slug: this.state.slug,
 				password: SHA3(this.state.password).toString(encHex),
 				avatar: this.state.avatar,
-				title: this.state.title,
 				bio: this.state.bio,
-				location: this.state.location,
 				website: this.state.website,
-				orcid: this.state.orcid,
-				github: this.state.github,
-				twitter: this.state.twitter,
-				facebook: this.state.facebook,
-				googleScholar: this.state.googleScholar,
 			})
 		})
 		.then(()=> {
 			window.location.href = '/';
 		})
 		.catch((err)=> {
-			this.setState({ postUserIsLoading: false, postUserError: err });
+			this.setState({ postOrganizationIsLoading: false, postOrganizationError: err });
 		});
 	}
 
-	onSubscribedChange() {
-		this.setState((prevState) => ({
-			subscribed: !prevState.subscribed
-		}));
+	// onSubscribedChange() {
+	// 	this.setState((prevState) => ({
+	// 		subscribed: !prevState.subscribed
+	// 	}));
+	// }
+
+	onNameChange(evt) {
+		this.setState({ name: evt.target.value });
 	}
 
-	onFirstNameChange(evt) {
-		this.setState({ firstName: evt.target.value });
-	}
-
-	onLastNameChange(evt) {
-		this.setState({ lastName: evt.target.value });
+	onSlugChange(evt) {
+		this.setState({ slug: evt.target.value });
 	}
 
 	onPasswordChange(evt) {
 		this.setState({ password: evt.target.value });
-	}
-
-	onTitleChange(evt) {
-		this.setState({ title: evt.target.value.substring(0, 70).replace(/\n/g, ' ') });
 	}
 
 	onBioChange(evt) {
@@ -114,15 +95,6 @@ class UserCreate extends Component {
 	render() {
 		const expandables = [
 			{
-				label: 'Location',
-				showTextOnButton: true,
-				icon: <Icon icon="map-marker" />,
-				action: ()=> { this.setState({ showLocation: true }); },
-				isVisible: this.state.showLocation,
-				value: this.state.location,
-				onChange: (evt)=> { this.setState({ location: evt.target.value }); }
-			},
-			{
 				label: 'Website',
 				showTextOnButton: true,
 				icon: <Icon icon="link" />,
@@ -131,54 +103,9 @@ class UserCreate extends Component {
 				value: this.state.website,
 				onChange: (evt)=> { this.setState({ website: evt.target.value }); }
 			},
-			{
-				label: 'Orcid',
-				icon: <Icon icon="orcid" />,
-				action: ()=> { this.setState({ showOrcid: true }); },
-				isVisible: this.state.showOrcid,
-				helperText: `https://orcid.org/${this.state.orcid}`,
-				value: this.state.orcid,
-				onChange: (evt)=> { this.setState({ orcid: evt.target.value }); }
-			},
-			{
-				label: 'Github',
-				icon: <Icon icon="github" />,
-				action: ()=> { this.setState({ showGithub: true }); },
-				helperText: `https://github.com/${this.state.github}`,
-				isVisible: this.state.showGithub,
-				value: this.state.github,
-				onChange: (evt)=> { this.setState({ github: evt.target.value }); }
-			},
-			{
-				label: 'Twitter',
-				icon: <Icon icon="twitter" />,
-				action: ()=> { this.setState({ showTwitter: true }); },
-				helperText: `https://twitter.com/${this.state.twitter}`,
-				isVisible: this.state.showTwitter,
-				value: this.state.twitter,
-				onChange: (evt)=> { this.setState({ twitter: evt.target.value }); }
-			},
-			{
-				label: 'Facebook',
-				icon: <Icon icon="facebook" />,
-				action: ()=> { this.setState({ showFacebook: true }); },
-				helperText: `https://facebook.com/${this.state.facebook}`,
-				isVisible: this.state.showFacebook,
-				value: this.state.facebook,
-				onChange: (evt)=> { this.setState({ facebook: evt.target.value }); }
-			},
-			{
-				label: 'Google Scholar',
-				icon: <Icon icon="google-scholar" />,
-				action: ()=> { this.setState({ showGoogleScholar: true }); },
-				helperText: `https://scholar.google.com/citations?user=${this.state.googleScholar}`,
-				isVisible: this.state.showGoogleScholar,
-				value: this.state.googleScholar,
-				onChange: (evt)=> { this.setState({ googleScholar: evt.target.value }); }
-			},
 		];
 		return (
-			<div id="user-create-container">
+			<div id="organization-create-container">
 				<PageWrapper
 					loginData={this.props.loginData}
 					locationData={this.props.locationData}
@@ -210,16 +137,17 @@ class UserCreate extends Component {
 											value={this.props.signupData.email}
 										/>
 										<InputField
-											label="First Name"
+											label="Organization Name"
 											isRequired={true}
 											value={this.state.firstName}
-											onChange={this.onFirstNameChange}
+											onChange={this.onNameChange}
 										/>
 										<InputField
-											label="Last Name"
+											label="Organization Username"
 											isRequired={true}
-											value={this.state.lastName}
-											onChange={this.onLastNameChange}
+											value={this.state.slug}
+											onChange={this.onSlugChange}
+											helperText={`Profile will be https://priorartarchive.org/${this.state.slug || 'username'}`}
 										/>
 										<InputField
 											label="Password"
@@ -233,12 +161,6 @@ class UserCreate extends Component {
 											label="Avatar Image"
 											onNewImage={this.onAvatarChange}
 											useCrop={true}
-										/>
-										<InputField
-											label="Title"
-											value={this.state.title}
-											onChange={this.onTitleChange}
-											helperText={`${this.state.title.length}/70 characters. Displayed by your name on discussions.`}
 										/>
 										<InputField
 											label="Bio"
@@ -278,23 +200,23 @@ class UserCreate extends Component {
 											</InputField>
 										}
 
-										<InputField wrapperClassName="bp3-callout" label="Stay Up To Date">
+										{/* <InputField wrapperClassName="bp3-callout" label="Stay Up To Date">
 											<Checkbox
 												label="Subscribe to our feature release & community newsletter."
 												checked={this.state.subscribed}
 												onChange={this.onSubscribedChange}
 											/>
-										</InputField>
+										</InputField> */}
 
-										<InputField error={this.state.postUserError && 'Error Creating User'}>
+										<InputField error={this.state.postOrganizationError && 'Error Creating Organization'}>
 											<Button
 												name="create"
 												type="submit"
 												className="bp3-button bp3-intent-primary create-account-button"
 												onClick={this.onCreateSubmit}
 												text="Create Account"
-												disabled={!this.state.firstName || !this.state.lastName || !this.state.password}
-												loading={this.state.postUserIsLoading}
+												disabled={!this.state.name || !this.state.slug || !this.state.password}
+												loading={this.state.postOrganizationIsLoading}
 											/>
 										</InputField>
 									</form>
@@ -308,7 +230,7 @@ class UserCreate extends Component {
 	}
 }
 
-UserCreate.propTypes = propTypes;
-export default UserCreate;
+OrganizationCreate.propTypes = propTypes;
+export default OrganizationCreate;
 
-hydrateWrapper(UserCreate);
+hydrateWrapper(OrganizationCreate);

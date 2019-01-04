@@ -113,7 +113,7 @@ class Login extends Component {
 									<NonIdealState
 										visual={
 											<Avatar
-												userInitials={this.props.loginData.initials}
+												userInitials={this.props.loginData.name.substring(0, 1)}
 												userAvatar={this.props.loginData.avatar}
 												width={100}
 											/>
@@ -124,7 +124,7 @@ class Login extends Component {
 												<AnchorButton
 													className="bp3-large"
 													text="View Profile"
-													href={`/user/${this.props.loginData.slug}`}
+													href={`/organization/${this.props.loginData.slug}`}
 												/>
 												<Button
 													className="bp3-large"

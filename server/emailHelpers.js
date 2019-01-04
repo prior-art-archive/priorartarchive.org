@@ -7,37 +7,35 @@ const mg = mailgun.client({
 });
 
 export const sendPasswordResetEmail = ({ toEmail, resetUrl })=> {
-	// TODO: We should probably indicate the community somewhere.
-	// e.g. 'We've received a request to reset your PubPub account on Responsive Science.'
-	return mg.messages.create('mg.pubpub.org', {
-		from: 'PubPub Team <team@pubpub.org>',
+	return mg.messages.create('mg.priorartarchive.org', {
+		from: 'Prior Art Archive Team <team@priorartarchive.org>',
 		to: [toEmail],
-		subject: 'Password Reset · PubPub',
+		subject: 'Password Reset · Prior Art Archive',
 		text: stripIndent(`
 			We've received a password reset request. Follow the link below to reset your password.
 
 			${resetUrl}
 
 			Sincerely,
-			PubPub Support
+			Prior Art Archive Team
 		`),
 	});
 };
 
 export const sendSignupEmail = ({ toEmail, signupUrl })=> {
-	return mg.messages.create('mg.pubpub.org', {
-		from: 'PubPub Team <team@pubpub.org>',
+	return mg.messages.create('mg.priorartarchive.org', {
+		from: 'Prior Art Archive Team <team@priorartarchive.org>',
 		to: [toEmail],
-		subject: 'Welcome to PubPub!',
+		subject: 'Welcome to the Prior Art Archive!',
 		text: stripIndent(`
-			Welcome to PubPub!
+			Welcome to the Prior Art Archive!
 			
 			Click the following link to create your account:
 
 			${signupUrl}
 
 			Sincerely,
-			PubPub Support
+			Prior Art Archive Team
 		`),
 	});
 };

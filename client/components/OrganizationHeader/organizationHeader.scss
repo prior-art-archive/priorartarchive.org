@@ -1,4 +1,4 @@
-.user-header-component {
+.organization-header-component {
 	&:after {
 		display: table;
 		clear: both;
@@ -34,7 +34,7 @@
 }
 
 @media only screen and (max-width: 720px) {
-	.user-header-component {
+	.organization-header-component {
 		.avatar-wrapper {
 			float: none;
 			width: 100%;

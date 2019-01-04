@@ -11,7 +11,7 @@ app.get('/api/uploadPolicy', (req, res)=> {
 	const s3 = {
 		access_key: awsDetails.accessKeyAws,
 		secret_key: awsDetails.secretKeyAws,
-		bucket: 'assets.pubpub.org',
+		bucket: 'assets.priorartarchive.org',
 		acl: 'public-read',
 		https: 'true',
 		error_message: '',

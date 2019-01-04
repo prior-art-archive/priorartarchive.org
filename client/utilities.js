@@ -73,6 +73,30 @@ export const getResizedUrl = function(url) {
 	// return `https://resize.pubpub.org/${prefix}${dimensions}/${filepath}`;
 };
 
+export function checkForAsset(url) {
+	let checkCount = 0;
+	const maxCheckCount = 10;
+	const checkInterval = 1000; /* This will check for 10 seconds and then fail */
+	return new Promise((resolve, reject)=> {
+		const checkUrl = ()=> {
+			fetch(url, {
+				method: 'HEAD',
+			})
+			.then((response)=> {
+				if (!response.ok) {
+					if (checkCount < maxCheckCount) {
+						checkCount += 1;
+						return setTimeout(checkUrl, checkInterval);
+					}
+					return reject();
+				}
+				return resolve();
+			});
+		};
+		checkUrl();
+	});
+}
+
 export function s3Upload(file, progressEvent, finishEvent, index) {
 	function beginUpload() {
 		const folderName = isPriorArtArchiveProduction
@@ -88,7 +112,7 @@ export function s3Upload(file, progressEvent, finishEvent, index) {
 		const formData = new FormData();
 
 		formData.append('key', filename);
-		formData.append('AWSAccessKeyId', 'AKIAJQ5MNLCTIMY2ZF7Q');
+		formData.append('AWSAccessKeyId', 'AKIAJGNYICEFYTH5R3RQ');
 		formData.append('acl', 'public-read');
 		formData.append('policy', JSON.parse(this.responseText).policy);
 		formData.append('signature', JSON.parse(this.responseText).signature);
@@ -100,9 +124,12 @@ export function s3Upload(file, progressEvent, finishEvent, index) {
 			progressEvent(evt, index);
 		}, false);
 		sendFile.upload.addEventListener('load', (evt)=>{
-			finishEvent(evt, index, file.type, filename, file.name);
+			checkForAsset(`https://s3-external-1.amazonaws.com/assets.priorartarchive.org/${filename}`)
+			.then(()=> {
+				finishEvent(evt, index, file.type, filename, file.name);
+			});
 		}, false);
-		sendFile.open('POST', 'https://s3-external-1.amazonaws.com/assets.pubpub.org', true);
+		sendFile.open('POST', 'https://s3-external-1.amazonaws.com/assets.priorartarchive.org', true);
 		sendFile.send(formData);
 	}
 
