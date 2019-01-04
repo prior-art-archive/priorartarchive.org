@@ -35,37 +35,7 @@ const id = {
 	defaultValue: Sequelize.UUIDV4,
 };
 
-// const Upload = sequelize.define('Upload', {
-// 	id: id,
-// 	rawMetadata: { type: Sequelize.JSONB },
-// 	formattedMetadata: { type: Sequelize.JSONB },
-// 	underlayMetadata: { type: Sequelize.JSONB },
-// 	organizationId: { type: Sequelize.UUID },
-// 	deleted: { type: Sequelize.BOOLEAN },
-// 	requestId: {
-// 		type: Sequelize.UUID,
-// 		unique: true,
-// 	},
-// });
-
-const Asset = sequelize.define('Asset', {
-	id: id,
-	url: { type: Sequelize.TEXT },
-	originalFilename: { type: Sequelize.TEXT },
-	title: { type: Sequelize.TEXT },
-	description: { type: Sequelize.TEXT },
-	datePublished: { type: Sequelize.TEXT },
-	md5Hash: {
-		type: Sequelize.TEXT,
-		allowNull: false,
-		unique: true,
-	},
-	sourcePath: { type: Sequelize.TEXT },
-	/* Set by Associations */
-	companyId: { type: Sequelize.UUID, allowNull: false },
-});
-
-const Company = sequelize.define('Company', {
+const Organization = sequelize.define('Organization', {
 	id: id,
 	slug: {
 		type: Sequelize.TEXT,
@@ -74,7 +44,7 @@ const Company = sequelize.define('Company', {
 		validate: {
 			isLowercase: true,
 			len: [1, 280],
-			is: /^(?=.*[a-zA-Z])[a-zA-Z0-9-]+$/, // Must contain at least one letter, alphanumeric and underscores and hyphens
+			is: /^[a-zA-Z0-9-]+$/, // Alphanumeric and hyphens
 		},
 	},
 	name: { type: Sequelize.TEXT, allowNull: false },
@@ -89,78 +59,43 @@ const Company = sequelize.define('Company', {
 			isLowercase: true,
 		}
 	},
-	location: { type: Sequelize.TEXT },
 	website: { type: Sequelize.TEXT },
 	hash: { type: Sequelize.TEXT, allowNull: false },
 	salt: { type: Sequelize.TEXT, allowNull: false },
 });
 
-const User = sequelize.define('User', {
-	id: id,
-	slug: {
-		type: Sequelize.TEXT,
-		unique: true,
-		allowNull: false,
-		validate: {
-			isLowercase: true,
-			len: [1, 280],
-			is: /^[a-zA-Z0-9-]+$/, // Must contain at least one letter, alphanumeric and underscores and hyphens
-		},
-	},
-	firstName: { type: Sequelize.TEXT, allowNull: false },
-	lastName: { type: Sequelize.TEXT, allowNull: false },
-	fullName: { type: Sequelize.TEXT, allowNull: false },
-	initials: { type: Sequelize.STRING, allowNull: false },
-	avatar: { type: Sequelize.TEXT },
-	bio: { type: Sequelize.TEXT },
-	title: { type: Sequelize.TEXT },
-	email: {
-		type: Sequelize.TEXT,
-		allowNull: false,
-		unique: true,
-		validate: {
-			isEmail: true,
-			isLowercase: true,
-		}
-	},
-	publicEmail: {
-		type: Sequelize.TEXT,
-		validate: {
-			isEmail: true,
-			isLowercase: true,
-		}
-	},
-	location: { type: Sequelize.TEXT },
-	website: { type: Sequelize.TEXT },
-	facebook: { type: Sequelize.TEXT },
-	twitter: { type: Sequelize.TEXT },
-	github: { type: Sequelize.TEXT },
-	orcid: { type: Sequelize.TEXT },
-	googleScholar: { type: Sequelize.TEXT },
-	resetHashExpiration: { type: Sequelize.DATE },
-	resetHash: { type: Sequelize.TEXT },
-	inactive: { type: Sequelize.BOOLEAN },
-	passwordDigest: { type: Sequelize.TEXT },
-	hash: { type: Sequelize.TEXT, allowNull: false },
-	salt: { type: Sequelize.TEXT, allowNull: false },
-});
-
-passportLocalSequelize.attachToUser(User, {
-	usernameField: 'email',
+passportLocalSequelize.attachToUser(Organization, {
+	usernameField: 'slug',
 	hashField: 'hash',
 	saltField: 'salt',
 	digest: 'sha512',
 	iterations: 25000,
 });
 
-/* Companies have many Assets. Recipes belong to a single Community */
-Company.hasMany(Asset, { onDelete: 'CASCADE', as: 'assets', foreignKey: 'companyId' });
-Asset.belongsTo(Company, { onDelete: 'CASCADE', as: 'company', foreignKey: 'companyId' });
+const Document = sequelize.define('Document', {
+	id: id,
+	title: { type: Sequelize.TEXT },
+	description: { type: Sequelize.TEXT },
+	fileUrl: { type: Sequelize.TEXT },
+	fileName: { type: Sequelize.TEXT },
+	organizationId: { type: Sequelize.UUID, allowNull: false },
+});
+
+const Assertion = sequelize.define('Assertion', {
+	id: id,
+	documentId: { type: Sequelize.UUID, allowNull: false },
+	organizationId: { type: Sequelize.UUID, allowNull: false },
+	cid: { type: Sequelize.TEXT },
+});
+
+/* Organizations have many Documents. Documents belong to a single Organization */
+Organization.hasMany(Document, { onDelete: 'CASCADE', as: 'documents', foreignKey: 'organizationId' });
+Document.belongsTo(Organization, { onDelete: 'CASCADE', as: 'organization', foreignKey: 'organizationId' });
 
 const db = {
-	Asset: Asset,
-	User: User,
-	Company: Company,
+	Organization: Organization,
+	Document: Document,
+	Assertion: Assertion,
 };
 
 db.sequelize = sequelize;

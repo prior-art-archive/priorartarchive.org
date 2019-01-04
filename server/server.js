@@ -6,7 +6,7 @@ import compression from 'compression';
 import enforce from 'express-sslify';
 import Module from 'module';
 import passport from 'passport';
-import { sequelize, User } from './models';
+import { sequelize, Organization } from './models';
 
 /* Since we are server-rendering components, we 	*/
 /* need to ensure we don't require things intended 	*/
@@ -64,9 +64,9 @@ app.use(session({
 /* ------------------- */
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(Organization.createStrategy());
+passport.serializeUser(Organization.serializeUser());
+passport.deserializeUser(Organization.deserializeUser());
 
 /* ------------ */
 /* Handle Error */
