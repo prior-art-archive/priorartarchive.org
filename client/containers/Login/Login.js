@@ -23,10 +23,10 @@ class Login extends Component {
 			loginError: undefined,
 			logoutLoading: false,
 		};
-		/* We use refs rather than state to manage email */
+		/* We use refs rather than state to manage username */
 		/* and password form values because browser autocomplete */
 		/* does not play nicely with onChange events as of Oct 31, 2018 */
-		this.emailRef = React.createRef();
+		this.slugRef = React.createRef();
 		this.passwordRef = React.createRef();
 		this.onLoginSubmit = this.onLoginSubmit.bind(this);
 		this.onLogoutSubmit = this.onLogoutSubmit.bind(this);
@@ -34,19 +34,19 @@ class Login extends Component {
 
 	onLoginSubmit(evt) {
 		evt.preventDefault();
-		if (!this.emailRef.current
-			|| !this.emailRef.current.value
+		if (!this.slugRef.current
+			|| !this.slugRef.current.value
 			|| !this.passwordRef.current
 			|| !this.passwordRef.current.value
 		) {
-			return this.setState({ loginLoading: false, loginError: 'Invalid Email or Password' });
+			return this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });
 		}
 
 		this.setState({ loginLoading: true, loginError: undefined });
 		return apiFetch('/api/login', {
 			method: 'POST',
 			body: JSON.stringify({
-				email: this.emailRef.current.value.toLowerCase(),
+				slug: this.slugRef.current.value.toLowerCase(),
 				password: SHA3(this.passwordRef.current.value).toString(encHex),
 			})
 		})
@@ -54,7 +54,7 @@ class Login extends Component {
 			window.location.href = this.props.locationData.query.redirect || '/';
 		})
 		.catch(()=> {
-			this.setState({ loginLoading: false, loginError: 'Invalid Email or Password' });
+			this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });
 		});
 	}
 
@@ -82,10 +82,9 @@ class Login extends Component {
 
 										<form onSubmit={this.onLoginSubmit}>
 											<InputField
-												label="Email"
-												placeholder="example@email.com"
+												label="Username"
 												autocomplete="username"
-												inputRef={this.emailRef}
+												inputRef={this.slugRef}
 											/>
 											<InputField
 												label="Password"
