@@ -107,16 +107,14 @@ export function checkForAsset(url) {
 	});
 }
 
-export function s3Upload(file, progressEvent, finishEvent, index) {
+export function s3Upload(file, progressEvent, finishEvent, index, folder) {
 	function beginUpload() {
-		const folderName = isPriorArtArchiveProduction
+		const generatedFolderName = isPriorArtArchiveProduction
 			? generateHash(8)
 			: '_testing';
-
+		const folderName = folder || generatedFolderName;
 		const extension = file.name !== undefined ? file.name.split('.').pop() : 'jpg';
 
-		// const filename = folderName + '/' + new Date().getTime() + '.' + extension;
-		// const filename = folderName + '/' + (Math.floor(Math.random() * 8)) + new Date().getTime() + '.' + extension;
 		const filename = `${folderName}/${Math.floor(Math.random() * 8)}${new Date().getTime()}.${extension}`;
 		const fileType = file.type !== undefined ? file.type : 'image/jpeg';
 		const formData = new FormData();

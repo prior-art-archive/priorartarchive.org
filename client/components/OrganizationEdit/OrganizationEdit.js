@@ -3,20 +3,12 @@ import PropTypes from 'prop-types';
 import { Button } from '@blueprintjs/core';
 import InputField from 'components/InputField/InputField';
 import ImageUpload from 'components/ImageUpload/ImageUpload';
+import { apiFetch } from 'utilities';
 
 require('./organizationEdit.scss');
 
 const propTypes = {
 	organizationData: PropTypes.object.isRequired,
-	onSave: PropTypes.func,
-	error: PropTypes.string,
-	isLoading: PropTypes.bool,
-};
-
-const defaultProps = {
-	onSave: ()=>{},
-	error: undefined,
-	isLoading: false,
 };
 
 class OrganizationEdit extends Component {
@@ -28,11 +20,13 @@ class OrganizationEdit extends Component {
 			bio: props.organizationData.bio || '',
 			avatar: props.organizationData.avatar,
 			website: props.organizationData.website || '',
+			putOrganizationIsLoading: false,
+			putOrganizationError: undefined,
 		};
 		this.onNameChange = this.onNameChange.bind(this);
 		this.onBioChange = this.onBioChange.bind(this);
 		this.onAvatarChange = this.onAvatarChange.bind(this);
-		this.handleSaveDetails = this.handleSaveDetails.bind(this);
+		this.handlePutOrganization = this.handlePutOrganization.bind(this);
 	}
 
 	onNameChange(evt) {
@@ -47,7 +41,7 @@ class OrganizationEdit extends Component {
 		this.setState({ avatar: val, hasChanged: true });
 	}
 
-	handleSaveDetails(evt) {
+	handlePutOrganization(evt) {
 		evt.preventDefault();
 		const newOrganizationObject = {
 			organizationId: this.props.organizationData.id,
@@ -56,7 +50,18 @@ class OrganizationEdit extends Component {
 			bio: this.state.bio,
 			website: this.state.website,
 		};
-		this.props.onSave(newOrganizationObject);
+
+		this.setState({ putOrganizationIsLoading: true, putOrganizationError: undefined });
+		return apiFetch('/api/organizations', {
+			method: 'PUT',
+			body: JSON.stringify(newOrganizationObject)
+		})
+		.then(()=> {
+			window.location.href = `/organization/${this.props.organizationData.slug}`;
+		})
+		.catch((err)=> {
+			this.setState({ putOrganizationIsLoading: false, putOrganizationError: err });
+		});
 	}
 
 	render() {
@@ -109,15 +114,15 @@ class OrganizationEdit extends Component {
 								})}
 
 								<div className="buttons">
-									<InputField error={this.props.error && 'Error Saving Details'}>
+									<InputField error={this.state.putOrganizationError && 'Error Saving Details'}>
 										<Button
 											name="create"
 											type="submit"
 											className="bp3-button bp3-intent-primary"
-											onClick={this.handleSaveDetails}
+											onClick={this.handlePutOrganization}
 											text="Save Details"
 											disabled={!this.state.name || !this.state.hasChanged}
-											loading={this.props.isLoading}
+											loading={this.state.putOrganizationIsLoading}
 										/>
 									</InputField>
 								</div>
@@ -130,6 +135,5 @@ class OrganizationEdit extends Component {
 	}
 }
 
-OrganizationEdit.defaultProps = defaultProps;
 OrganizationEdit.propTypes = propTypes;
 export default OrganizationEdit;
