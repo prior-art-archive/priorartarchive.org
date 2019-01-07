@@ -7,7 +7,7 @@ import InputField from 'components/InputField/InputField';
 import ImageUpload from 'components/ImageUpload/ImageUpload';
 import PageWrapper from 'components/PageWrapper/PageWrapper';
 import Icon from 'components/Icon/Icon';
-import { hydrateWrapper, apiFetch } from 'utilities';
+import { hydrateWrapper, apiFetch, slugifyString } from 'utilities';
 
 require('./organizationCreate.scss');
 
@@ -77,7 +77,7 @@ class OrganizationCreate extends Component {
 	}
 
 	onSlugChange(evt) {
-		this.setState({ slug: evt.target.value });
+		this.setState({ slug: slugifyString(evt.target.value) });
 	}
 
 	onPasswordChange(evt) {

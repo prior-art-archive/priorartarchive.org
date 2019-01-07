@@ -2,8 +2,18 @@ import React from 'react';
 // import Raven from 'raven-js';
 import { hydrate } from 'react-dom';
 import { FocusStyleManager } from '@blueprintjs/core';
+import { remove as removeDiacritics } from 'diacritics';
 
 let isPriorArtArchiveProduction = false;
+
+export const slugifyString = (input)=> {
+	if (typeof input !== 'string') {
+		console.error('input is not a valid string');
+		return '';
+	}
+
+	return removeDiacritics(input).replace(/[^a-zA-Z0-9-]/gi, '').replace(/ /g, '-').toLowerCase();
+};
 
 export const hydrateWrapper = (Component)=> {
 	if (typeof window !== 'undefined' && window.location.origin !== 'http://localhost:9001') {
