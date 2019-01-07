@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import { ProgressBar } from '@blueprintjs/core';
+import uuidv4 from 'uuid/v4';
 import Icon from 'components/Icon/Icon';
 import OrganizationHeader from 'components/OrganizationHeader/OrganizationHeader';
 import OrganizationEdit from 'components/OrganizationEdit/OrganizationEdit';
@@ -32,7 +33,8 @@ class Organization extends Component {
 			const newItems = [];
 			files.forEach((file, index)=> {
 				const fileIndex = index + prevState.items.length;
-				s3Upload(file, this.onUploadProgress, this.onUploadFinish, fileIndex, `uploads/${this.props.organizationData.id}`);
+				const docId = uuidv4();
+				s3Upload(file, this.onUploadProgress, this.onUploadFinish, fileIndex, `uploads/${this.props.organizationData.id}/${docId}`);
 				newItems.push({
 					name: file.name,
 					progress: 0,
