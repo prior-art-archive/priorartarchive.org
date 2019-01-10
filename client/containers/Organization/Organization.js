@@ -34,7 +34,7 @@ class Organization extends Component {
 			files.forEach((file, index)=> {
 				const fileIndex = index + prevState.items.length;
 				const docId = uuidv4();
-				s3Upload(file, this.onUploadProgress, this.onUploadFinish, fileIndex, `uploads/${this.props.organizationData.id}/${docId}`);
+				s3Upload(file, this.onUploadProgress, this.onUploadFinish, fileIndex, `uploads/${this.props.organizationData.id}`, docId, file.name);
 				newItems.push({
 					name: file.name,
 					progress: 0,

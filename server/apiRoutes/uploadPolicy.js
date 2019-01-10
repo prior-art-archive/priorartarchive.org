@@ -27,15 +27,24 @@ app.get('/api/uploadPolicy', (req, res)=> {
 	const acl = s3.acl; // private or public-read
 
 	// THIS YOU DON'T
-	let policy = { expiration: s3.expiration_date(),
+	const metaConditions = req.query.hasMeta === 'true'
+		? [
+			['starts-with', '$x-amz-meta-document-id', ''],
+			['starts-with', '$x-amz-meta-original-filename', ''],
+		]
+		: [];
+	let policy = {
+		expiration: s3.expiration_date(),
 		conditions: [
 			{ bucket: bucket },
 			['starts-with', '$key', ''],
 			{ acl: acl },
 			{ success_action_status: '200' },
 			['starts-with', '$Content-Type', ''],
+			...metaConditions
 		]
 	};
+
 	policy = Buffer.from(JSON.stringify(policy)).toString('base64').replace(/\n|\r/, '');
 	const hmac = crypto.createHmac('sha1', s3.secret_key);
 	hmac.update(policy);

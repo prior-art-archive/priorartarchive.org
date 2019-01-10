@@ -107,7 +107,8 @@ export function checkForAsset(url) {
 	});
 }
 
-export function s3Upload(file, progressEvent, finishEvent, index, folder) {
+export function s3Upload(file, progressEvent, finishEvent, index, folder, documentId, originalFilename) {
+	const hasMeta = !!documentId || !!originalFilename;
 	function beginUpload() {
 		const generatedFolderName = isPriorArtArchiveProduction
 			? generateHash(8)
@@ -125,6 +126,10 @@ export function s3Upload(file, progressEvent, finishEvent, index, folder) {
 		formData.append('policy', JSON.parse(this.responseText).policy);
 		formData.append('signature', JSON.parse(this.responseText).signature);
 		formData.append('Content-Type', fileType);
+		if (hasMeta) {
+			formData.append('x-amz-meta-document-id', documentId);
+			formData.append('x-amz-meta-original-filename', originalFilename);
+		}
 		formData.append('success_action_status', '200');
 		formData.append('file', file);
 		const sendFile = new XMLHttpRequest();
@@ -137,12 +142,13 @@ export function s3Upload(file, progressEvent, finishEvent, index, folder) {
 				finishEvent(evt, index, file.type, filename, file.name);
 			});
 		}, false);
+
 		sendFile.open('POST', 'https://s3-external-1.amazonaws.com/assets.priorartarchive.org', true);
 		sendFile.send(formData);
 	}
 
 	const getPolicy = new XMLHttpRequest();
 	getPolicy.addEventListener('load', beginUpload);
-	getPolicy.open('GET', `/api/uploadPolicy?contentType=${file.type}`);
+	getPolicy.open('GET', `/api/uploadPolicy?contentType=${file.type}&hasMeta=${hasMeta}`);
 	getPolicy.send();
 }

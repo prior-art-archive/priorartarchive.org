@@ -81,6 +81,7 @@ const Document = sequelize.define('Document', {
 	description: { type: Sequelize.TEXT },
 	fileUrl: { type: Sequelize.TEXT },
 	fileName: { type: Sequelize.TEXT },
+	contentType: { type: Sequelize.TEXT },
 	organizationId: { type: Sequelize.UUID, allowNull: false },
 });
 
