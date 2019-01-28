@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PageWrapper from 'components/PageWrapper/PageWrapper';
-import Document from 'components/Document/Document';
+import SearchResult from 'components/SearchResult/SearchResult';
 import { apiFetch, hydrateWrapper } from 'utilities';
 
 require('./search.scss');
@@ -38,9 +38,11 @@ class Search extends Component {
 			return <p>No results found</p>;
 		}
 		return (
-			<ol>
-				{result.hits.map(hit => <li><Document id={hit._id} {...hit._source} /></li>)}
-			</ol>
+			<div>
+				{result.hits.map((data) => (
+					<SearchResult key={data.id} data={data} />
+				))}
+			</div>
 		);
 	}
 
@@ -55,8 +57,6 @@ class Search extends Component {
 					<div className="container">
 						<div className="row">
 							<div className="col-12">
-								<h1>Search</h1>
-								{JSON.stringify(this.props.searchData)}
 								{this.renderResults()}
 							</div>
 						</div>
