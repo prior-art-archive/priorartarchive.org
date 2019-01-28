@@ -8,4 +8,5 @@ require('./search'); 				// Route: '/search'
 require('./signup'); 				// Route: '/signup'
 require('./terms'); 				// Route: '/tos'
 require('./passwordReset'); 		// Route: ['/password-reset', '/password-reset/:resetHash/:slug']
+require('./document');			// Route: '/doc/:id'
 require('./noMatch');				// Route: '/*'
