@@ -4,12 +4,16 @@ import Html from '../Html';
 import app from '../server';
 import { renderToNodeStream, getInitialData, handleErrors, generateMetaComponents } from '../utilities';
 
+const defaultOperator = 'AND';
+
 app.get('/search', (req, res, next)=> {
 	return getInitialData(req)
 	.then((initialData)=> {
+		const query = initialData.locationData.query.q;
+		const operator = initialData.locationData.query.o || defaultOperator;
 		const newInitialData = {
 			...initialData,
-			searchData: { empty: 'data' },
+			searchData: { query, operator },
 		};
 		return renderToNodeStream(res,
 			<Html
