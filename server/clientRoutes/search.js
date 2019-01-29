@@ -9,8 +9,13 @@ const defaultOperator = 'AND';
 app.get('/search', (req, res, next)=> {
 	return getInitialData(req)
 	.then((initialData)=> {
-		const query = initialData.locationData.query.q;
-		const operator = initialData.locationData.query.o || defaultOperator;
+		const operator = initialData.locationData.query.operator || defaultOperator;
+		let query = initialData.locationData.query.query || '';
+		try {
+			query = decodeURIComponent(query);
+		} catch (e) {
+			query = '';
+		}
 		const newInitialData = {
 			...initialData,
 			searchData: { query, operator },
