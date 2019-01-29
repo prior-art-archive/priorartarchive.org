@@ -90,6 +90,7 @@ const Assertion = sequelize.define('Assertion', {
 	documentId: { type: Sequelize.UUID, allowNull: false },
 	organizationId: { type: Sequelize.UUID, allowNull: false },
 	cid: { type: Sequelize.TEXT },
+	fileCid: { type: Sequelize.TEXT },
 });
 
 const Signup = sequelize.define('Signup', {
