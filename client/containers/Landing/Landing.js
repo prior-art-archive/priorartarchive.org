@@ -21,7 +21,7 @@ class Landing extends React.Component {
 
 	handleSearch(evt) {
 		evt.preventDefault();
-		window.location.href = `/search?q=${this.state.query}`;
+		window.location.href = `/search?query=${encodeURIComponent(this.state.query)}`;
 	}
 
 	render() {
