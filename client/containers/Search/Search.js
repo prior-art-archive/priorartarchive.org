@@ -43,7 +43,7 @@ class Search extends Component {
 		const searchData = { query, operator };
 		window.history.pushState(searchData, '', `/search?query=${encodeURIComponent(query)}&operator=${operator}`);
 		window.scrollTo(0, 0);
-		return Search.fetchResults(searchData).then(result => this.setState({ result }));
+		return Search.fetchResults(searchData).then(result => this.setState({ result, emptyQueryWarning: false }));
 	}
 
 	handleQueryChange(event) {
