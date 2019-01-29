@@ -23,38 +23,35 @@ class Search extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			result: null,
-			q: props.searchData.query,
-			o: props.searchData.operator,
-		};
-		this.handleSearchChange = this.handleSearchChange.bind(this);
+		const { query, operator } = props.searchData;
+		this.state = { result: null, query, operator };
+		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.handleOperatorChange = this.handleOperatorChange.bind(this);
-		this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
+		this.handleSearch = this.handleSearch.bind(this);
 	}
 
 	componentDidMount() {
 		Search.fetchResults(this.props.searchData).then(result => this.setState({ result }));
 	}
 
-	handleSearchSubmit(event) {
+	handleSearch(event) {
 		event.preventDefault();
-		if (!this.state.q) {
+		if (!this.state.query.trim()) {
 			return this.setState({ emptyQueryWarning: true });
 		}
-		const { q: query, o: operator } = this.state;
+		const { query, operator } = this.state;
 		const searchData = { query, operator };
 		window.history.pushState(searchData, '', `/search?query=${encodeURIComponent(query)}&operator=${operator}`);
 		window.scrollTo(0, 0);
 		return Search.fetchResults(searchData).then(result => this.setState({ result }));
 	}
 
-	handleSearchChange(event) {
-		this.setState({ q: event.target.value });
+	handleQueryChange(event) {
+		this.setState({ query: event.target.value });
 	}
 
 	handleOperatorChange(event) {
-		this.setState({ o: event.target.value });
+		this.setState({ operator: event.target.value });
 	}
 
 	renderResults() {
@@ -85,11 +82,11 @@ class Search extends Component {
 					<div className="container">
 						<div className="row">
 							<div className="col-12">
-								<form onSubmit={this.handleSearchSubmit}>
+								<form onSubmit={this.handleSearch}>
 									<SearchBar
-										queryValue={this.state.q}
-										onQueryChange={this.handleSearchChange}
-										operatorValue={this.state.o}
+										queryValue={this.state.query}
+										onQueryChange={this.handleQueryChange}
+										operatorValue={this.state.operator}
 										onOperatorChange={this.handleOperatorChange}
 									/>
 								</form>
