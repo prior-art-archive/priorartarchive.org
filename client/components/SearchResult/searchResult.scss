@@ -1,0 +1,49 @@
+.search-result-wrapper {
+	padding-bottom: 2em;
+	margin-bottom: 2em;
+	border-bottom: 1px solid #DDD;
+	&:last-of-type {
+		border-bottom: 0px solid #DDD;
+	}
+	.title {
+		font-size: 1.2em;
+		font-weight: 600;
+	}
+	.url {
+		margin: 0px 0px;
+		color: #1E9F40;
+	}
+	.description {
+		margin: 10px 0px;
+	}
+	.source, .date {
+		display: inline-block;
+		padding-right: 2em;
+		opacity: 0.75;
+	}
+	.cpc-codes {
+		opacity: 0.75;
+		padding-top: 10px;
+		span, .pt-tag {
+			margin-right: 8px;
+			margin-bottom: 8px;
+		}	
+	}
+
+	&.loading {
+		.title {
+			width: 70%;
+			height: 2em;
+			margin-bottom: 0.25em;
+		}
+		.description {
+			width: 80%;
+			height: 1em;
+			margin-bottom: 0.25em;
+		}
+		.date {
+			width: 40%;
+			height: 1em;
+		}
+	}	
+}
