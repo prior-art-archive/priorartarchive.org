@@ -42,12 +42,12 @@
 				.bp3-disabled {
 					pointer-events: none;
 				}
-				.pt-button-group > .bp3-button:not(:last-child) {
+				.bp3-button-group > .bp3-button:not(:last-child) {
 					margin-right: -1px;
 					border-top-right-radius: 0;
 					border-bottom-right-radius: 0;
 				}
-				.pt-button-group > .bp3-button:not(:last-child) {
+				.bp3-button-group > .bp3-button:not(:last-child) {
 					border-top-right-radius: 0;
 					border-bottom-right-radius: 0;
 				}
@@ -61,7 +61,7 @@
 				flex-shrink: 1;
 			}
 		}
-		.pt-non-ideal-state {
+		.bp3-non-ideal-state {
 			padding: 4em 0em;
 		}
 	}

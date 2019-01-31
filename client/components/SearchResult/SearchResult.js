@@ -18,9 +18,9 @@ const SearchResult = function(props) {
 	if (props.isLoading) {
 		return (
 			<div className="search-result-wrapper loading">
-				<div className="title pt-skeleton" />
-				<div className="description pt-skeleton" />
-				<div className="date pt-skeleton" />
+				<div className="title bp3-skeleton" />
+				<div className="description bp3-skeleton" />
+				<div className="date bp3-skeleton" />
 			</div>
 		);
 	}
@@ -73,7 +73,7 @@ const SearchResult = function(props) {
 				<div className="cpc-codes">
 					<span>CPC Codes:</span>
 					{cpcCodes.map((code)=> {
-						return <span key={code} className="pt-tag pt-minimal">{code}</span>;
+						return <span key={code} className="bp3-tag bp3-minimal">{code}</span>;
 					})}
 				</div>
 			}

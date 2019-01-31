@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import store from 'store/dist/store.legacy';
 import PageWrapper from 'components/PageWrapper/PageWrapper';
 import SearchBar from 'components/SearchBar/SearchBar';
 import SearchResult from 'components/SearchResult/SearchResult';
@@ -19,6 +20,22 @@ class Search extends Component {
 		return apiFetch('/api/search', {
 			method: 'POST',
 			body: JSON.stringify(searchData)
+		})
+		.then((searchResults)=> {
+			const searchHistory = store.get('searchHistory') || [];
+			searchHistory.push({
+				query: searchResults.query,
+				searchedAt: new Date(),
+				totalHits: searchResults.total,
+				operator: searchResults.operator,
+				sources: searchData.source.length
+					? searchData.source.map((item)=> {
+						return item.charAt(0).toUpperCase() + item.slice(1);
+					}).join(', ')
+					: 'All',
+			});
+			store.set('searchHistory', searchHistory);
+			return searchResults;
 		});
 	}
 
@@ -199,7 +216,7 @@ class Search extends Component {
 			<div className="results-content">
 				{result.hits.map(hit => <SearchResult key={hit.id} data={hit} />)}
 				<div className="page-buttons">
-					<div className="pt-button-group">
+					<div className="bp3-button-group">
 						{!!this.state.offset &&
 							<Button onClick={this.handlePreviousPage} text="Previous" />
 						}

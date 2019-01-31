@@ -94,6 +94,8 @@ app.post('/api/search', (req, res)=> {
 					}));
 
 					res.status(200).json({
+						query: query,
+						operator: operator,
 						aggregations: {
 							dateRange: response.aggregations.dateRange,
 							fileType: response.aggregations.fileType,

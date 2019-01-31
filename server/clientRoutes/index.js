@@ -1,6 +1,7 @@
 require('./landing');				// Route: '/'
 require('./about');					// Route: '/about'
 require('./document');				// Route: '/doc/:id'
+require('./history'); 				// Route: '/history'
 require('./login'); 				// Route: '/login'
 require('./organizationCreate'); 	// Route: '/organization/create/:hash'
 require('./organization'); 			// Route: ['/organization/:slug', '/organization/:slug/:mode']
