@@ -1,12 +1,12 @@
 {
-  "name": "prior-art-archive",
+  "name": "priorart-site",
   "version": "2.0.0",
   "description": "Search the world's prior art.",
   "author": "Underlay Team <underlay@mit.edu>",
   "license": "GPL-2.0+",
   "repository": {
     "type": "git",
-    "url": "https://github.com/underlay/prior-art-archive-site.git"
+    "url": "https://github.com/knowledgefutures/priorart-site.git"
   },
   "main": "init.js",
   "scripts": {

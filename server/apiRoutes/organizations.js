@@ -79,3 +79,21 @@ app.put('/api/organizations', (req, res)=> {
 		return res.status(500).json(err);
 	});
 });
+
+app.get('/api/organizations/id-by-slug', (req, res)=> {
+	Organization.findOne({
+		where: {
+			slug: req.query.slug,
+		},
+		attributes: ['id', 'slug'],
+	})
+	.then((organizationData)=> {
+		if (!organizationData) {
+			return res.status(404).json('Slug not found');
+		}
+		return res.status(200).json(organizationData.id);
+	})
+	.catch(()=> {
+		return res.status(500).json('Error: Invalid slug');
+	});
+});
