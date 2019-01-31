@@ -25,21 +25,10 @@ const SearchResult = function(props) {
 		);
 	}
 
-	// title: null,
-	// description: null,
-	// publicationDate: null,
-	// id: PropTypes.string.isRequired,
-	// organizationId: PropTypes.string.isRequired,
-	// title: PropTypes.string,
-	// description: PropTypes.string,
-	// uploadDate: PropTypes.string.isRequired,
-	// publicationDate: PropTypes.string,
-	// contentType: PropTypes.string.isRequired,
-	// contentLength: PropTypes.number.isRequired,
-
 	const title = props.data.title || '';
-	const copyright = props.data.copyright || [];
-	const cpcCodes = props.data.cpccodes || [[]];
+	const copyright = props.data.copyright || '';
+	const highlight = props.data.highlight || null;
+	const cpcCodes = props.data.cpcCodes || [];
 	let uploadDate;
 	let publicationDate;
 
@@ -52,34 +41,38 @@ const SearchResult = function(props) {
 		uploadDate = props.data.uploadDate.replace(/[+-]{1}[0-9]{4}$/, '');
 		publicationDate = props.data.publicationDate.replace(/[+-]{1}[0-9]{4}$/, '');
 	} catch (err) {
-		console.log('Invalid Date');
+		console.log('Invalid Date', props.data.uploadDate, props.data.publicationDate);
 	}
-	const formattedUrl = `/doc/${props.data.id}`;
+
+	const documentUrl = `/doc/${props.data.id}`;
+	const fileUrl = props.data.fileUrl;
+
 	return (
 		<div className="search-result-wrapper">
 			<div className="title">
-				<a href={formattedUrl}>{title}</a>
+				<a href={documentUrl}>{title}</a>
 			</div>
-			{/* <div className="url">{formattedUrl}</div> */}
-			<div className="description">
-				{props.data.highlight && props.data.highlight.text.map((preview, i) => (
-					<div key={i.toString()} dangerouslySetInnerHTML={{ __html: preview }} />
-				))}
-			</div>
-			<div className="source">Source: {props.data.source}</div>
+			{fileUrl && <a href={fileUrl} className="url">{fileUrl}</a>}
+			{highlight &&
+				<div
+					className="description"
+					dangerouslySetInnerHTML={{ __html: highlight.text.join('... ') }}
+				/>
+			}
+			<div className="source">Source: {props.data.sourceName}</div>
 			{uploadDate &&
 				<div className="date">Uploaded: {dateFormat(uploadDate, 'mmmm dS, yyyy')}</div>
 			}
 			{publicationDate &&
 				<div className="date">Published: {dateFormat(publicationDate, 'mmmm dS, yyyy')}</div>
 			}
-			{copyright[0] &&
-				<div className="date">©{copyright[0]}</div>
+			{copyright &&
+				<div className="date">©{copyright}</div>
 			}
-			{cpcCodes[0][0] &&
+			{cpcCodes && cpcCodes.length > 0 &&
 				<div className="cpc-codes">
 					<span>CPC Codes:</span>
-					{cpcCodes[0].map((code)=> {
+					{cpcCodes.map((code)=> {
 						return <span key={code} className="pt-tag pt-minimal">{code}</span>;
 					})}
 				</div>

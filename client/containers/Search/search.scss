@@ -6,52 +6,73 @@
 	}
 	.page-content {
 		padding: 2em 0em;
-		.search-header {
+		.results {
+			padding: 2em 0em;
 			display: flex;
-			align-items: center;
-			h2 {
-				flex: 1 1 auto;
-				font-weight: 800;
+			align-items: flex-start;
+			.results-content {
+				flex-grow: 1;
+				flex-shrink: 1;
 				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
 			}
-			a {
-				white-space: nowrap;
-				flex: 0 0 auto;
-				margin-left: 1em;
-			}
-		}
-		.pt-input-group input {
-			margin-bottom: 1em;
-			font-size: 35px;
-			font-weight: 200;
-			height: 70px;
-			line-height: 70px;
-		}
-		.pt-input-action {
-			margin-top: 7px;
-		}
-		.pt-tabs {
-			border-bottom: 1px solid #CCC;
-		}
-		.pt-spinner {
-			width: 35px;
-			margin: 13px;
-		}
-		.result {
-			margin-bottom: 3em;
-			display: flex;
-			font-size: 16px;
-			.content {
-				flex: 1 1 auto;
-			}
-			.title {
-				font-weight: 800;
-				display: flex;
-				svg {
-					margin: -5px 0px 0px 5px;
+			.results-filters {
+				border: 1px solid #DDD;
+				&.loading {
+					min-height: 300px;	
 				}
+				min-width: 250px;
+				background-color: #F0F0F0;
+				border-radius: 2px;
+				padding: 1em;
+				margin: 0em 0em 2em 4em;
+				.filter-block {
+					margin-bottom: 1.5em;
+					padding-bottom: 1.5em;
+					border-bottom: 1px solid #DDD;
+					&:last-of-type {
+						border-bottom: 0px solid #DDD;
+						margin-bottom: 0px;
+					}
+				}
+				.bp3-control:last-of-type {
+					margin-bottom: 0px;
+				}
+			}
+			.page-buttons {
+				.bp3-disabled {
+					pointer-events: none;
+				}
+				.pt-button-group > .bp3-button:not(:last-child) {
+					margin-right: -1px;
+					border-top-right-radius: 0;
+					border-bottom-right-radius: 0;
+				}
+				.pt-button-group > .bp3-button:not(:last-child) {
+					border-top-right-radius: 0;
+					border-bottom-right-radius: 0;
+				}
+			}
+		}
+		.option-wrapper {
+			display: inline-flex;
+			width: 100%;
+			.option-key {
+				flex-grow: 1;
+				flex-shrink: 1;
+			}
+		}
+		.pt-non-ideal-state {
+			padding: 4em 0em;
+		}
+	}
+}
+
+@media only screen and (max-width: 720px) {
+	#search-container {
+		.results {
+			display: block;
+			.results-filters {
+				margin: 4em 0em 0em;
 			}
 		}
 	}
