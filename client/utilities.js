@@ -6,6 +6,22 @@ import { remove as removeDiacritics } from 'diacritics';
 
 let isPriorArtArchiveProduction = false;
 
+export const operators = ['AND', 'OR', 'ADJ', 'NEAR', 'WITH', 'SAME'];
+export const searchDefaults = {
+	query: '',
+	operator: 'AND',
+	sort: 'date',
+	range: 'all',
+	fileType: [],
+	source: [],
+	offset: 0,
+};
+
+export const fileTypeMap = {
+	'text/html': 'HTML',
+	'application/pdf': 'PDF',
+};
+
 export const slugifyString = (input)=> {
 	if (typeof input !== 'string') {
 		console.error('input is not a valid string');

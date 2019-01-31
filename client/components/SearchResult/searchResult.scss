@@ -16,6 +16,9 @@
 	.description {
 		margin: 10px 0px;
 	}
+	.description em {
+		font-weight: 500;
+	}
 	.source, .date {
 		display: inline-block;
 		padding-right: 2em;

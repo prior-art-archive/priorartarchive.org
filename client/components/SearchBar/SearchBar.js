@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip, Icon } from '@blueprintjs/core';
 
+import { operators } from '../../utilities';
+
 require('./searchBar.scss');
 
 const propTypes = {
@@ -12,7 +14,6 @@ const propTypes = {
 };
 
 const SearchBar = function(props) {
-	const operators = ['AND', 'OR', 'ADJ', 'NEAR', 'WITH', 'SAME'];
 	return (
 		<div className="search-bar-wrapper">
 			<div className="bp3-control-group bp3-large">
