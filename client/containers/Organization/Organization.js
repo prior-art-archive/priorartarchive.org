@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
-import { ProgressBar } from '@blueprintjs/core';
 import uuidv4 from 'uuid/v4';
 import Icon from 'components/Icon/Icon';
 import OrganizationHeader from 'components/OrganizationHeader/OrganizationHeader';
 import OrganizationEdit from 'components/OrganizationEdit/OrganizationEdit';
+import OrganizationDocument from 'components/OrganizationDocument/OrganizationDocument';
 import PageWrapper from 'components/PageWrapper/PageWrapper';
 import { hydrateWrapper, s3Upload } from 'utilities';
 
@@ -69,7 +69,7 @@ class Organization extends Component {
 		const loginData = this.props.loginData;
 		const selfProfile = loginData.id && organizationData.id === loginData.id;
 		const mode = this.props.locationData.params.mode;
-
+		const documents = organizationData.documents || [];
 		return (
 			<div id="organization-container">
 				<PageWrapper
@@ -92,26 +92,6 @@ class Organization extends Component {
 							</div>
 						</div>
 					}
-					<div className="container narrow">
-						<div className="row">
-							<div className="col-12">
-								{this.state.items.map((item, index)=> {
-									const key = `${item.name}-${index}`;
-									return (
-										<div key={key}>
-											<div><b>{item.name}</b></div>
-											{item.url &&
-												<div><a href={item.url}>{item.url}</a></div>
-											}
-											{!item.url &&
-												<ProgressBar value={item.progress === 1 ? null : item.progress} />
-											}
-										</div>
-									);
-								})}
-							</div>
-						</div>
-					</div>
 					{selfProfile &&
 						<div className="container narrow">
 							<div className="row">
@@ -142,6 +122,21 @@ class Organization extends Component {
 							</div>
 						</div>
 					}
+					<div className="container narrow">
+						<div className="row">
+							<div className="col-12">
+								{[...this.state.items, ...documents].map((item, index)=> {
+									const key = `${item.name}-${index}`;
+									return (
+										<OrganizationDocument
+											key={key}
+											documentData={item}
+										/>
+									);
+								})}
+							</div>
+						</div>
+					</div>
 				</PageWrapper>
 			</div>
 		);

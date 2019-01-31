@@ -3,7 +3,7 @@ import React from 'react';
 import OrganizationContainer from 'containers/Organization/Organization';
 import Html from '../Html';
 import app from '../server';
-import { Organization } from '../models';
+import { Organization, Document } from '../models';
 import { renderToNodeStream, getInitialData, handleErrors, generateMetaComponents } from '../utilities';
 
 app.get(['/organization/:slug', '/organization/:slug/:mode'], (req, res, next)=> {
@@ -14,6 +14,10 @@ app.get(['/organization/:slug', '/organization/:slug/:mode'], (req, res, next)=>
 		attributes: {
 			exclude: ['salt', 'hash', 'email', 'createdAt', 'updatedAt']
 		},
+		include: [{
+			model: Document,
+			as: 'documents',
+		}],
 	});
 
 	return Promise.all([getInitialData(req), getOrganizationData])
