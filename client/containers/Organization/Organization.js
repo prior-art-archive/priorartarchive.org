@@ -96,6 +96,16 @@ class Organization extends Component {
 						<div className="container narrow">
 							<div className="row">
 								<div className="col-12">
+									<div>
+										<h2>SFTP Uploads</h2>
+										<p>To upload files using SFTP - open your FTP client and connect using your username and password to the following server:</p>
+										<ul>
+											<li><b>Protocol:</b> SFTP</li>
+											<li><b>Host:</b> s-bd9eb971ea634f51b.server.transfer.us-east-1.amazonaws.com</li>
+											<li><b>Port:</b> 22</li>
+										</ul>
+									</div>
+									<h2>Drag-and-Drop</h2>
 									<Dropzone
 										onDrop={this.onDrop}
 										accept="application/pdf, text/html"
