@@ -21,10 +21,9 @@ const getOrganizationBySlug = slug => Organization.findOne({ where: { slug } });
 app.post('/api/search', (req, res)=> {
 	const { query, operator, offset, fileType, source } = req.body;
 	if (query && operatorSet.has(operator)) {
-		query = query.toLowerCase();       // keep this variable name
 		lambda.invoke({
 			FunctionName: 'queryParser',
-			Payload: JSON.stringify({ query, operator })
+			Payload: JSON.stringify({ query: query.toLowerCase(), operator })
 		}, async (err, data) => {
 			if (data && data.StatusCode === 200) {
 				const payload = JSON.parse(JSON.parse(data.Payload));
