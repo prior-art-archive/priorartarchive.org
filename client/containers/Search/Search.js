@@ -21,21 +21,25 @@ class Search extends Component {
 			method: 'POST',
 			body: JSON.stringify(searchData)
 		})
-		.then((searchResults)=> {
-			const searchHistory = store.get('searchHistory') || [];
-			searchHistory.push({
-				query: searchResults.query,
-				searchedAt: new Date(),
-				totalHits: searchResults.total,
-				operator: searchResults.operator,
-				sources: searchData.source.length
-					? searchData.source.map((item)=> {
-						return item.charAt(0).toUpperCase() + item.slice(1);
-					}).join(', ')
-					: 'All',
-			});
-			store.set('searchHistory', searchHistory);
+		.then(searchResults => {
+			if (searchResults) {
+				const searchHistory = store.get('searchHistory') || [];
+				searchHistory.push({
+					query: searchResults.query,
+					searchedAt: new Date(),
+					totalHits: searchResults.total,
+					operator: searchResults.operator,
+					sources: searchData.source.length
+						? searchData.source.map((item)=> {
+							return item.charAt(0).toUpperCase() + item.slice(1);
+						}).join(', ')
+						: 'All',
+				});
+				store.set('searchHistory', searchHistory);
+			}
 			return searchResults;
+		}).catch(error => {
+			throw error;
 		});
 	}
 
@@ -105,6 +109,7 @@ class Search extends Component {
 		super(props);
 
 		this.state = {
+			error: null,
 			result: null,
 			aggregations: null,
 			queryValue: props.searchData.query,
@@ -122,7 +127,11 @@ class Search extends Component {
 
 	componentDidMount() {
 		Search.fetchResults(this.props.searchData).then(result => {
-			this.setState({ result, aggregations: result.aggregations });
+			if (result) {
+				this.setState({ error: null, result, aggregations: result.aggregations });
+			}
+		}).catch(error => {
+			this.setState({ error, result: null, aggregations: null });
 		});
 	}
 
@@ -132,14 +141,22 @@ class Search extends Component {
 			// because our props are never updated?
 			const { searchData } = this.props;
 			Search.updateUrl(searchData);
-			Search.fetchResults(searchData).then(result => this.setState({
-				result,
-				aggregations: result.aggregations,
-				...searchData
-			}));
+			Search.fetchResults(searchData).then(result => {
+				if (result) {
+					this.setState({
+						error: null,
+						result,
+						aggregations: result.aggregations,
+						...searchData
+					});
+				}
+			}).catch(error => {
+				this.setState({ error, result: null, aggregations: null });
+			});
 		} else if (!this.state.emptyQueryWarning) {
 			const {
-				result: _,
+				error: _error,
+				result: _result,
 				emptyQueryWarning,
 				queryValue,
 				operatorValue,
@@ -148,11 +165,18 @@ class Search extends Component {
 			} = this.state;
 			if (Search.updateSearchData(searchData, state)) {
 				Search.updateUrl(searchData);
-				Search.fetchResults(searchData).then(result => this.setState({
-					result,
-					aggregations: aggregations || result.aggregations,
-					...searchData
-				}));
+				Search.fetchResults(searchData).then(result => {
+					if (result) {
+						this.setState({
+							error: null,
+							result,
+							aggregations: aggregations || result.aggregations,
+							...searchData
+						});
+					}
+				}).catch(error => {
+					this.setState({ error, result: null, aggregations: null });
+				});
 			}
 		}
 	}
@@ -200,8 +224,12 @@ class Search extends Component {
 	}
 
 	renderResults() {
-		const { result, offset } = this.state;
+		const { error, result, offset } = this.state;
 
+		if (error !== null) {
+			console.error(error);
+			return <p className="error">Search failed with an error from the server.</p>;
+		}
 		if (result === null) {
 			return null;
 		}
