@@ -25,7 +25,7 @@ app.post('/api/search', (req, res)=> {
 	if (query && operatorSet.has(operator)) {
 		lambda.invoke({
 			FunctionName: 'queryParser',
-			Payload: JSON.stringify({ query, operator })
+			Payload: JSON.stringify({ query: query.toLowerCase(), operator })
 		}, (err, data) => {
 			new Promise(async (resolve, reject) => {
 				if (data && data.StatusCode === 200) {
@@ -87,7 +87,7 @@ app.post('/api/search', (req, res)=> {
 					}).catch(reject);
 					if (!response) return;
 
-					if (response.timed_out) res.status(504).end();
+					if (response.timed_out) res.status(504).end('Timed out.');
 					else {
 						// There will probably be several results with the same organizationId;
 						// instead of looking them all we'll make a map of ids to names ourselves.
