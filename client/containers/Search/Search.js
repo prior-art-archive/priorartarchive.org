@@ -45,7 +45,7 @@ class Search extends Component {
 
 	// returns true if the two arguments are different
 	// immutable.js was invented for this purpose :-/
-	static updateSearchData(searchData, state) {
+	static compareSearchData(searchData, state) {
 		return !!Object.keys(searchData).find(key => {
 			// handle the array types separately
 			if (key === 'fileType' || key === 'source') {
@@ -133,6 +133,16 @@ class Search extends Component {
 		}).catch(error => {
 			this.setState({ error, result: null, aggregations: null });
 		});
+
+		// Set initial state object
+		window.history.replaceState(this.props.searchData, '');
+
+		// Since we use history.pushState we should attach a handler for popState too
+		window.addEventListener('popstate', ({ state }) => this.setState({
+			queryValue: state.query,
+			operatorValue: state.operator,
+			...state,
+		}));
 	}
 
 	componentDidUpdate(props, state) {
@@ -163,7 +173,7 @@ class Search extends Component {
 				aggregations,
 				...searchData
 			} = this.state;
-			if (Search.updateSearchData(searchData, state)) {
+			if (Search.compareSearchData(searchData, state)) {
 				Search.updateUrl(searchData);
 				Search.fetchResults(searchData).then(result => {
 					if (result) {
