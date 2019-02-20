@@ -14,6 +14,8 @@ const defaultProps = {
 	isLoading: false,
 };
 
+const defaultTitle = "Untitled Document"
+
 const SearchResult = function(props) {
 	if (props.isLoading) {
 		return (
@@ -47,10 +49,12 @@ const SearchResult = function(props) {
 	const documentUrl = `/doc/${props.data.id}`;
 	const fileUrl = props.data.fileUrl;
 
+	const titleClass = title ? 'title' : 'untitled';
+	const titleText = title || defaultTitle;
 	return (
 		<div className="search-result-wrapper">
-			<div className="title">
-				<a href={documentUrl}>{title}</a>
+			<div className={titleClass}>
+				<a href={documentUrl}>{titleText}</a>
 			</div>
 			{fileUrl && <a href={fileUrl} className="url">{fileUrl}</a>}
 			{highlight &&
