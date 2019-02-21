@@ -14,7 +14,7 @@ const defaultProps = {
 	isLoading: false,
 };
 
-const defaultTitle = "Untitled Document"
+const defaultTitle = 'Untitled';
 
 const SearchResult = function(props) {
 	if (props.isLoading) {
