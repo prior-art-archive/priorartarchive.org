@@ -15,6 +15,7 @@
     "build-dev": "webpack --config ./client/webpack/webpackConfig.dev.js --watch",
     "build-prod": "rm -rf ./dist && webpack --config ./client/webpack/webpackConfig.prod.js",
     "postinstall": "npm run build-prod",
+    "pretty": "prettier --write '**/*.js'",
     "prod": "npm run build-prod && npm run api-prod",
     "lint": "eslint .",
     "start": "concurrently --kill-others \"npm run api-dev\" \"npm run build-dev\"",

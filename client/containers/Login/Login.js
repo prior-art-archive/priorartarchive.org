@@ -34,12 +34,16 @@ class Login extends Component {
 
 	onLoginSubmit(evt) {
 		evt.preventDefault();
-		if (!this.slugRef.current
-			|| !this.slugRef.current.value
-			|| !this.passwordRef.current
-			|| !this.passwordRef.current.value
+		if (
+			!this.slugRef.current ||
+			!this.slugRef.current.value ||
+			!this.passwordRef.current ||
+			!this.passwordRef.current.value
 		) {
-			return this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });
+			return this.setState({
+				loginLoading: false,
+				loginError: 'Invalid Username or Password',
+			});
 		}
 
 		this.setState({ loginLoading: true, loginError: undefined });
@@ -48,20 +52,21 @@ class Login extends Component {
 			body: JSON.stringify({
 				slug: this.slugRef.current.value.toLowerCase(),
 				password: SHA3(this.passwordRef.current.value).toString(encHex),
+			}),
+		})
+			.then(() => {
+				window.location.href = this.props.locationData.query.redirect || '/';
 			})
-		})
-		.then(()=> {
-			window.location.href = this.props.locationData.query.redirect || '/';
-		})
-		.catch(()=> {
-			this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });
-		});
+			.catch(() => {
+				this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });
+			});
 	}
 
 	onLogoutSubmit() {
 		this.setState({ logoutLoading: true });
-		apiFetch('/api/logout')
-		.then(()=> { window.location.href = '/'; });
+		apiFetch('/api/logout').then(() => {
+			window.location.href = '/';
+		});
 	}
 
 	render() {
@@ -76,7 +81,7 @@ class Login extends Component {
 					<div className="container small">
 						<div className="row">
 							<div className="col-12 bp3-elevation">
-								{!this.props.loginData.id &&
+								{!this.props.loginData.id && (
 									<div>
 										<h1>Login</h1>
 
@@ -90,7 +95,9 @@ class Login extends Component {
 												label="Password"
 												type="password"
 												autocomplete="current-password"
-												helperText={<a href="/password-reset">Forgot Password</a>}
+												helperText={
+													<a href="/password-reset">Forgot Password</a>
+												}
 												inputRef={this.passwordRef}
 											/>
 											<InputField error={this.state.loginError}>
@@ -105,14 +112,19 @@ class Login extends Component {
 											</InputField>
 										</form>
 
-										<a href="/signup" className="switch-message">Don&apos;t have an account? Click to Signup</a>
+										<a href="/signup" className="switch-message">
+											Don&apos;t have an account? Click to Signup
+										</a>
 									</div>
-								}
-								{this.props.loginData.id &&
+								)}
+								{this.props.loginData.id && (
 									<NonIdealState
 										visual={
 											<Avatar
-												userInitials={this.props.loginData.name.substring(0, 1)}
+												userInitials={this.props.loginData.name.substring(
+													0,
+													1,
+												)}
 												userAvatar={this.props.loginData.avatar}
 												width={100}
 											/>
@@ -123,7 +135,9 @@ class Login extends Component {
 												<AnchorButton
 													className="bp3-large"
 													text="View Profile"
-													href={`/organization/${this.props.loginData.slug}`}
+													href={`/organization/${
+														this.props.loginData.slug
+													}`}
 												/>
 												<Button
 													className="bp3-large"
@@ -134,7 +148,7 @@ class Login extends Component {
 											</div>
 										}
 									/>
-								}
+								)}
 							</div>
 						</div>
 					</div>

@@ -11,10 +11,7 @@ const propTypes = {
 const Privacy = function(props) {
 	return (
 		<div id="privacy-container">
-			<PageWrapper
-				loginData={props.loginData}
-				locationData={props.locationData}
-			>
+			<PageWrapper loginData={props.loginData} locationData={props.locationData}>
 				<div className="legal-wrapper">
 					<div className="container narrow">
 						<div className="row">

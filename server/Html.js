@@ -16,7 +16,7 @@ const propTypes = {
 };
 
 const Html = (props) => {
-	const getPath = (chunkName, extension)=> {
+	const getPath = (chunkName, extension) => {
 		const manifestUrl = manifest
 			? `${manifest[`${chunkName}.${extension}`]}`
 			: `${chunkName}.${extension}`;
@@ -29,18 +29,28 @@ const Html = (props) => {
 			<head>
 				<meta charSet="utf-8" />
 				{props.headerComponents}
-				<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+				<meta
+					name="viewport"
+					content="width=device-width, initial-scale=1, shrink-to-fit=no"
+				/>
 				<link rel="stylesheet" type="text/css" href={getPath('baseStyle', 'css')} />
 				<link rel="stylesheet" type="text/css" href={getPath('vendor', 'css')} />
 				<link rel="stylesheet" type="text/css" href={getPath(props.chunkName, 'css')} />
-				<link rel="search" type="application/opensearchdescription+xml" title="Prior Art Archive" href="/opensearch.xml" />
+				<link
+					rel="search"
+					type="application/opensearchdescription+xml"
+					title="Prior Art Archive"
+					href="/opensearch.xml"
+				/>
 			</head>
 			<body>
-				<div id="root">
-					{props.children}
-				</div>
+				<div id="root">{props.children}</div>
 				<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,default,HTMLCanvasElement.prototype.toBlob,Object.entries,Object.values" />
-				<script id="initial-data" type="text/plain" data-json={JSON.stringify(props.initialData)} />
+				<script
+					id="initial-data"
+					type="text/plain"
+					data-json={JSON.stringify(props.initialData)}
+				/>
 				<script src={getPath('vendor', 'js')} />
 				<script src={getPath(props.chunkName, 'js')} />
 			</body>

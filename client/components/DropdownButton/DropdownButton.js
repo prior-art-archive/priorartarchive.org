@@ -39,31 +39,34 @@ const DropdownButton = function(props) {
 			transitionDuration={-1}
 			inheritDarkTheme={false}
 			tetherOptions={{
-				constraints: [{ attachment: 'together', to: 'window' }]
+				constraints: [{ attachment: 'together', to: 'window' }],
 			}}
 			isOpen={props.isOpen}
 			usePortal={props.usePortal}
 		>
-			{props.icon && !props.label
-				? <Button
+			{props.icon && !props.label ? (
+				<Button
 					disabled={props.isDisabled}
-					className={`dropdown-button ${props.isSmall ? 'bp3-small' : ''} ${props.isMinimal ? 'bp3-minimal' : ''}`}
+					className={`dropdown-button ${props.isSmall ? 'bp3-small' : ''} ${
+						props.isMinimal ? 'bp3-minimal' : ''
+					}`}
 					icon={<Icon icon={props.icon} />}
 				/>
-				: <Button
+			) : (
+				<Button
 					disabled={props.isDisabled}
-					className={`dropdown-button ${props.isSmall ? 'bp3-small' : ''} ${props.isMinimal ? 'bp3-minimal' : ''}`}
+					className={`dropdown-button ${props.isSmall ? 'bp3-small' : ''} ${
+						props.isMinimal ? 'bp3-minimal' : ''
+					}`}
 					text={
 						<span>
-							{props.icon &&
-								<Icon icon={props.icon} />
-							}
+							{props.icon && <Icon icon={props.icon} />}
 							{props.label.trim()}
 							<span className="bp3-icon-standard bp3-icon-caret-down bp3-align-right" />
 						</span>
 					}
 				/>
-			}
+			)}
 		</Popover>
 	);
 };

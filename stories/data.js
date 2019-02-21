@@ -1,12 +1,8 @@
 export const locationData = {
 	hostname: 'localhost',
 	path: '/login',
-	params: {
-
-	},
-	query: {
-
-	},
+	params: {},
+	query: {},
 	queryString: '',
 };
 export const loginData = {
@@ -15,5 +11,5 @@ export const loginData = {
 	slug: 'travis-rich',
 	fullName: 'Travis Rich',
 	avatar: 'https://s3.amazonaws.com/pubpub-upload/users/1451521226772.jpg',
-	isAdmin: false
+	isAdmin: false,
 };

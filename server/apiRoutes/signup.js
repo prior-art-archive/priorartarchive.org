@@ -3,46 +3,51 @@ import { generateHash } from '../utilities';
 import { sequelize, Signup, Organization } from '../models';
 import { sendSignupEmail } from '../emailHelpers';
 
-app.post('/api/signup', (req, res)=> {
+app.post('/api/signup', (req, res) => {
 	/* First, try to update the emailSentCount. */
 	/* If there are no records to update, then we create a new one. */
 	/* If this fails, it is because the email must be unique and it is already used */
 	const email = req.body.email.toLowerCase().trim();
 	Organization.findOne({
-		where: { email: email }
+		where: { email: email },
 	})
-	.then((organizationData)=> {
-		if (organizationData) { throw new Error('Email already used'); }
+		.then((organizationData) => {
+			if (organizationData) {
+				throw new Error('Email already used');
+			}
 
-		return Signup.update({ count: sequelize.literal('count + 1') }, {
-			where: { email: email, completed: false }
+			return Signup.update(
+				{ count: sequelize.literal('count + 1') },
+				{
+					where: { email: email, completed: false },
+				},
+			);
+		})
+		.then((updateCount) => {
+			if (updateCount[0]) {
+				return null;
+			}
+			return Signup.create({
+				email: email,
+				hash: generateHash(),
+				count: 1,
+				completed: false,
+			});
+		})
+		.then(() => {
+			return Signup.findOne({ where: { email: req.body.email } });
+		})
+		.then((signUpData) => {
+			return sendSignupEmail({
+				toEmail: signUpData.email,
+				signupUrl: `https://${req.hostname}/organization/create/${signUpData.hash}`,
+			});
+		})
+		.then(() => {
+			return res.status(201).json(true);
+		})
+		.catch((err) => {
+			console.error('Error in post signUp: ', err);
+			return res.status(500).json('Email already used');
 		});
-	})
-	.then((updateCount)=> {
-		if (updateCount[0]) {
-			return null;
-		}
-		return Signup.create({
-			email: email,
-			hash: generateHash(),
-			count: 1,
-			completed: false,
-		});
-	})
-	.then(()=> {
-		return Signup.findOne({ where: { email: req.body.email } });
-	})
-	.then((signUpData)=> {
-		return sendSignupEmail({
-			toEmail: signUpData.email,
-			signupUrl: `https://${req.hostname}/organization/create/${signUpData.hash}`
-		});
-	})
-	.then(()=> {
-		return res.status(201).json(true);
-	})
-	.catch((err)=> {
-		console.error('Error in post signUp: ', err);
-		return res.status(500).json('Email already used');
-	});
 });

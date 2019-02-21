@@ -16,7 +16,7 @@ class Landing extends React.Component {
 		super(props);
 		this.state = {
 			queryValue: searchDefaults.query,
-			operatorValue: searchDefaults.operator
+			operatorValue: searchDefaults.operator,
 		};
 		this.handleSearch = this.handleSearch.bind(this);
 		this.handleQueryChange = this.handleQueryChange.bind(this);

@@ -37,15 +37,20 @@ const Footer = function() {
 				<div className="row">
 					<div className="col-12">
 						<ul>
-							{links.map((link)=> {
-								if (link.url.indexOf('https:') > -1 || link.url.indexOf('mailto:') > -1) {
-									return <li key={`footer-item-${link.id}`}><a href={link.url}>{link.title}</a></li>;
+							{links.map((link) => {
+								if (
+									link.url.indexOf('https:') > -1 ||
+									link.url.indexOf('mailto:') > -1
+								) {
+									return (
+										<li key={`footer-item-${link.id}`}>
+											<a href={link.url}>{link.title}</a>
+										</li>
+									);
 								}
 								return (
 									<li key={`footer-item-${link.id}`}>
-										<a href={link.url}>
-											{link.title}
-										</a>
+										<a href={link.url}>{link.title}</a>
 									</li>
 								);
 							})}

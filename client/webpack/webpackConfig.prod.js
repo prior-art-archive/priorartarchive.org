@@ -6,15 +6,19 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const containerEntries = readdirSync(resolve(__dirname, '../containers')).filter((item)=> {
-	if (item === '.DS_Store') { return false; }
-	return true;
-}).reduce((prev, curr)=> {
-	return {
-		...prev,
-		[curr]: resolve(__dirname, `../containers/${curr}/${curr}`)
-	};
-}, {});
+const containerEntries = readdirSync(resolve(__dirname, '../containers'))
+	.filter((item) => {
+		if (item === '.DS_Store') {
+			return false;
+		}
+		return true;
+	})
+	.reduce((prev, curr) => {
+		return {
+			...prev,
+			[curr]: resolve(__dirname, `../containers/${curr}/${curr}`),
+		};
+	}, {});
 
 module.exports = {
 	mode: 'production',
@@ -23,7 +27,7 @@ module.exports = {
 		baseStyle: resolve(__dirname, '../baseStyle.scss'),
 	},
 	resolve: {
-		modules: [resolve(__dirname, '../'), 'node_modules']
+		modules: [resolve(__dirname, '../'), 'node_modules'],
 	},
 	devtool: '#source-map',
 	output: {
@@ -43,15 +47,21 @@ module.exports = {
 				use: [
 					MiniCssExtractPlugin.loader,
 					{ loader: 'css-loader' },
-					{ loader: 'sass-loader', options: { includePaths: [resolve(__dirname, '../')] } }
+					{
+						loader: 'sass-loader',
+						options: { includePaths: [resolve(__dirname, '../')] },
+					},
 				],
 			},
 			{
 				test: /\.(ttf|eot|svg|woff|woff2)$/,
 				use: [
-					{ loader: 'file-loader', query: { name: 'fonts/[hash].[ext]', publicPath: '/dist/' } }
-				]
-			}
+					{
+						loader: 'file-loader',
+						query: { name: 'fonts/[hash].[ext]', publicPath: '/dist/' },
+					},
+				],
+			},
 		],
 	},
 	plugins: [
@@ -80,7 +90,7 @@ module.exports = {
 					chunks: 'all',
 					// minChunks: 2, // This was causing weird vendor.css issues where it wouldn't output.
 				},
-			}
+			},
 		},
 	},
 	node: {

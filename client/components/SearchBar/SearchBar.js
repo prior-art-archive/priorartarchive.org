@@ -27,11 +27,17 @@ const SearchBar = function(props) {
 					/>
 				</div>
 			</div>
-			<button type="button" className="bp3-button bp3-intent-primary">Search</button>
+			<button type="button" className="bp3-button bp3-intent-primary">
+				Search
+			</button>
 			<div className="bp3-select bp3-large">
 				<select value={props.operatorValue} onChange={props.onOperatorChange}>
-					{operators.map((item)=> {
-						return <option value={item} key={`operator-${item}`}>{item}</option>;
+					{operators.map((item) => {
+						return (
+							<option value={item} key={`operator-${item}`}>
+								{item}
+							</option>
+						);
 					})}
 				</select>
 				<Icon icon="double-caret-vertical" />
@@ -42,7 +48,6 @@ const SearchBar = function(props) {
 				</a>
 			</Tooltip>
 		</div>
-
 	);
 };
 

@@ -31,14 +31,14 @@ class Signup extends Component {
 			method: 'POST',
 			body: JSON.stringify({
 				email: this.state.email.toLowerCase(),
+			}),
+		})
+			.then(() => {
+				this.setState({ postSignupIsLoading: false, isSuccessful: true });
 			})
-		})
-		.then(()=> {
-			this.setState({ postSignupIsLoading: false, isSuccessful: true });
-		})
-		.catch((err)=> {
-			this.setState({ postSignupIsLoading: false, postSignupError: err });
-		});
+			.catch((err) => {
+				this.setState({ postSignupIsLoading: false, postSignupError: err });
+			});
 	}
 
 	onEmailChange(evt) {
@@ -57,7 +57,7 @@ class Signup extends Component {
 					<div className="container small">
 						<div className="row">
 							<div className="col-12">
-								{!this.state.isSuccessful &&
+								{!this.state.isSuccessful && (
 									<div>
 										<h1>Signup</h1>
 
@@ -79,17 +79,25 @@ class Signup extends Component {
 												loading={this.state.postSignupIsLoading}
 											/>
 										</form>
-										<a href="/login" className="switch-message">Already have an account? Click to Login</a>
+										<a href="/login" className="switch-message">
+											Already have an account? Click to Login
+										</a>
 									</div>
-								}
+								)}
 
-								{this.state.isSuccessful &&
+								{this.state.isSuccessful && (
 									<NonIdealState
 										title="Signup Successful"
 										description={
 											<div className="success">
-												<p>An email has been sent to <b>{this.state.email}</b></p>
-												<p>Follow the link in that email to create your account.</p>
+												<p>
+													An email has been sent to{' '}
+													<b>{this.state.email}</b>
+												</p>
+												<p>
+													Follow the link in that email to create your
+													account.
+												</p>
 											</div>
 										}
 										visual="tick-circle"
@@ -104,7 +112,7 @@ class Signup extends Component {
 											/>
 										}
 									/>
-								}
+								)}
 							</div>
 						</div>
 					</div>

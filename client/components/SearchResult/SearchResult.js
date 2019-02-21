@@ -56,33 +56,40 @@ const SearchResult = function(props) {
 			<div className={titleClass}>
 				<a href={documentUrl}>{titleText}</a>
 			</div>
-			{fileUrl && <a href={fileUrl} className="url">{fileUrl}</a>}
-			{highlight &&
+			{fileUrl && (
+				<a href={fileUrl} className="url">
+					{fileUrl}
+				</a>
+			)}
+			{highlight && (
 				<div
 					className="description"
 					dangerouslySetInnerHTML={{ __html: highlight.text.join('... ') }}
 				/>
-			}
+			)}
 			<div className="source">Source: {props.data.sourceName}</div>
-			{uploadDate &&
+			{uploadDate && (
 				<div className="date">Uploaded: {dateFormat(uploadDate, 'mmmm dS, yyyy')}</div>
-			}
-			{publicationDate &&
-				<div className="date">Published: {dateFormat(publicationDate, 'mmmm dS, yyyy')}</div>
-			}
-			{copyright &&
-				<div className="date">©{copyright}</div>
-			}
-			{cpcCodes && cpcCodes.length > 0 &&
+			)}
+			{publicationDate && (
+				<div className="date">
+					Published: {dateFormat(publicationDate, 'mmmm dS, yyyy')}
+				</div>
+			)}
+			{copyright && <div className="date">©{copyright}</div>}
+			{cpcCodes && cpcCodes.length > 0 && (
 				<div className="cpc-codes">
 					<span>CPC Codes:</span>
-					{cpcCodes.map((code)=> {
-						return <span key={code} className="bp3-tag bp3-minimal">{code}</span>;
+					{cpcCodes.map((code) => {
+						return (
+							<span key={code} className="bp3-tag bp3-minimal">
+								{code}
+							</span>
+						);
 					})}
 				</div>
-			}
+			)}
 		</div>
-
 	);
 };
 
