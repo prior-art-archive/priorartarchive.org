@@ -16,8 +16,12 @@ const defaultProps = {
 
 const OrganizationHeader = function(props) {
 	const links = [
-		{ id: 1, value: props.organizationData.website, icon: <Icon icon="link" />, href: props.organizationData.website },
-
+		{
+			id: 1,
+			value: props.organizationData.website,
+			icon: <Icon icon="link" />,
+			href: props.organizationData.website,
+		},
 	];
 	return (
 		<div className="organization-header-component">
@@ -27,23 +31,42 @@ const OrganizationHeader = function(props) {
 					userInitials={props.organizationData.name.substring(0, 1)}
 					width={150}
 				/>
-				{props.isOrganization &&
+				{props.isOrganization && (
 					<div>
-						<a href={`/organization/${props.organizationData.slug}/edit`} className="bp3-button bp3-intent-primary">Edit Profile</a>
+						<a
+							href={`/organization/${props.organizationData.slug}/edit`}
+							className="bp3-button bp3-intent-primary"
+						>
+							Edit Profile
+						</a>
 					</div>
-				}
+				)}
 			</div>
 			<div className="details">
 				<h1>{props.organizationData.name}</h1>
-				{props.organizationData.bio &&
+				{props.organizationData.bio && (
 					<div className="bio">{props.organizationData.bio}</div>
-				}
+				)}
 				<div className="links">
-					{links.filter((link)=> {
-						return link.value;
-					}).map((link)=> {
-						return <a key={`link-${link.id}`} className={`bp3-button bp3-minimal ${!link.href ? 'no-click' : ''}`} href={link.href} rel="noopener noreferrer">{link.icon}{link.value}</a>;
-					})}
+					{links
+						.filter((link) => {
+							return link.value;
+						})
+						.map((link) => {
+							return (
+								<a
+									key={`link-${link.id}`}
+									className={`bp3-button bp3-minimal ${
+										!link.href ? 'no-click' : ''
+									}`}
+									href={link.href}
+									rel="noopener noreferrer"
+								>
+									{link.icon}
+									{link.value}
+								</a>
+							);
+						})}
 				</div>
 			</div>
 		</div>

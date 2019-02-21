@@ -18,10 +18,7 @@ const Document = function(props) {
 	const { title, description, fileName, fileUrl } = props.documentData;
 	return (
 		<div id="document-container">
-			<PageWrapper
-				loginData={props.loginData}
-				locationData={props.locationData}
-			>
+			<PageWrapper loginData={props.loginData} locationData={props.locationData}>
 				<div className="container">
 					<div className="row">
 						<div className="col-12">

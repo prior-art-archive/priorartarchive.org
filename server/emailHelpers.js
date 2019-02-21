@@ -3,10 +3,10 @@ import stripIndent from 'strip-indent';
 
 const mg = mailgun.client({
 	username: 'api',
-	key: process.env.MAILGUN_API_KEY
+	key: process.env.MAILGUN_API_KEY,
 });
 
-export const sendPasswordResetEmail = ({ toEmail, resetUrl })=> {
+export const sendPasswordResetEmail = ({ toEmail, resetUrl }) => {
 	return mg.messages.create('mg.priorartarchive.org', {
 		from: 'Prior Art Archive Team <team@priorartarchive.org>',
 		to: [toEmail],
@@ -22,7 +22,7 @@ export const sendPasswordResetEmail = ({ toEmail, resetUrl })=> {
 	});
 };
 
-export const sendSignupEmail = ({ toEmail, signupUrl })=> {
+export const sendSignupEmail = ({ toEmail, signupUrl }) => {
 	return mg.messages.create('mg.priorartarchive.org', {
 		from: 'Prior Art Archive Team <team@priorartarchive.org>',
 		to: [toEmail],

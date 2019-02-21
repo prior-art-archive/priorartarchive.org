@@ -56,14 +56,14 @@ class OrganizationCreate extends Component {
 				avatar: this.state.avatar,
 				bio: this.state.bio,
 				website: this.state.website,
+			}),
+		})
+			.then(() => {
+				window.location.href = '/';
 			})
-		})
-		.then(()=> {
-			window.location.href = '/';
-		})
-		.catch((err)=> {
-			this.setState({ postOrganizationIsLoading: false, postOrganizationError: err });
-		});
+			.catch((err) => {
+				this.setState({ postOrganizationIsLoading: false, postOrganizationError: err });
+			});
 	}
 
 	// onSubscribedChange() {
@@ -98,10 +98,14 @@ class OrganizationCreate extends Component {
 				label: 'Website',
 				showTextOnButton: true,
 				icon: <Icon icon="link" />,
-				action: ()=> { this.setState({ showWebsite: true }); },
+				action: () => {
+					this.setState({ showWebsite: true });
+				},
 				isVisible: this.state.showWebsite,
 				value: this.state.website,
-				onChange: (evt)=> { this.setState({ website: evt.target.value }); }
+				onChange: (evt) => {
+					this.setState({ website: evt.target.value });
+				},
 			},
 		];
 		return (
@@ -111,7 +115,7 @@ class OrganizationCreate extends Component {
 					locationData={this.props.locationData}
 					hideFooter={true}
 				>
-					{this.props.signupData.hashError &&
+					{this.props.signupData.hashError && (
 						<NonIdealState
 							title="Signup URL Invalid"
 							description={
@@ -121,11 +125,15 @@ class OrganizationCreate extends Component {
 								</div>
 							}
 							visual="error"
-							action={<a href="/signup" className="bp3-button">Signup</a>}
+							action={
+								<a href="/signup" className="bp3-button">
+									Signup
+								</a>
+							}
 						/>
-					}
+					)}
 
-					{!this.props.signupData.hashError &&
+					{!this.props.signupData.hashError && (
 						<div className="container small">
 							<div className="row">
 								<div className="col-12">
@@ -147,7 +155,8 @@ class OrganizationCreate extends Component {
 											isRequired={true}
 											value={this.state.slug}
 											onChange={this.onSlugChange}
-											helperText={`Profile will be https://priorartarchive.org/${this.state.slug || 'username'}`}
+											helperText={`Profile will be https://priorartarchive.org/${this
+												.state.slug || 'username'}`}
 										/>
 										<InputField
 											label="Password"
@@ -169,36 +178,47 @@ class OrganizationCreate extends Component {
 											onChange={this.onBioChange}
 											helperText={`${this.state.bio.length}/280 characters`}
 										/>
-										{expandables.filter((item)=> {
-											return item.isVisible;
-										}).map((item)=> {
-											return (
-												<InputField
-													key={`input-field-${item.label}`}
-													label={item.label}
-													value={item.value}
-													onChange={item.onChange}
-													helperText={item.helperText}
-												/>
-											);
-										})}
+										{expandables
+											.filter((item) => {
+												return item.isVisible;
+											})
+											.map((item) => {
+												return (
+													<InputField
+														key={`input-field-${item.label}`}
+														label={item.label}
+														value={item.value}
+														onChange={item.onChange}
+														helperText={item.helperText}
+													/>
+												);
+											})}
 
-										{!!expandables.filter(item => !item.isVisible).length &&
+										{!!expandables.filter((item) => !item.isVisible).length && (
 											<InputField label="Add More">
 												<div className="bp3-button-group">
-													{expandables.filter((item)=> {
-														return !item.isVisible;
-													}).map((item)=> {
-														return (
-															<button type="button" key={`button-${item.label}`} className="bp3-button expandable" onClick={item.action}>
-																{item.icon}
-																{item.showTextOnButton ? item.label : ''}
-															</button>
-														);
-													})}
+													{expandables
+														.filter((item) => {
+															return !item.isVisible;
+														})
+														.map((item) => {
+															return (
+																<button
+																	type="button"
+																	key={`button-${item.label}`}
+																	className="bp3-button expandable"
+																	onClick={item.action}
+																>
+																	{item.icon}
+																	{item.showTextOnButton
+																		? item.label
+																		: ''}
+																</button>
+															);
+														})}
 												</div>
 											</InputField>
-										}
+										)}
 
 										{/* <InputField wrapperClassName="bp3-callout" label="Stay Up To Date">
 											<Checkbox
@@ -208,14 +228,23 @@ class OrganizationCreate extends Component {
 											/>
 										</InputField> */}
 
-										<InputField error={this.state.postOrganizationError && 'Error Creating Organization'}>
+										<InputField
+											error={
+												this.state.postOrganizationError &&
+												'Error Creating Organization'
+											}
+										>
 											<Button
 												name="create"
 												type="submit"
 												className="bp3-button bp3-intent-primary create-account-button"
 												onClick={this.onCreateSubmit}
 												text="Create Account"
-												disabled={!this.state.name || !this.state.slug || !this.state.password}
+												disabled={
+													!this.state.name ||
+													!this.state.slug ||
+													!this.state.password
+												}
 												loading={this.state.postOrganizationIsLoading}
 											/>
 										</InputField>
@@ -223,7 +252,7 @@ class OrganizationCreate extends Component {
 								</div>
 							</div>
 						</div>
-					}
+					)}
 				</PageWrapper>
 			</div>
 		);

@@ -4,44 +4,54 @@ import OrganizationContainer from 'containers/Organization/Organization';
 import Html from '../Html';
 import app from '../server';
 import { Organization, Document } from '../models';
-import { renderToNodeStream, getInitialData, handleErrors, generateMetaComponents } from '../utilities';
+import {
+	renderToNodeStream,
+	getInitialData,
+	handleErrors,
+	generateMetaComponents,
+} from '../utilities';
 
-app.get(['/organization/:slug', '/organization/:slug/:mode'], (req, res, next)=> {
+app.get(['/organization/:slug', '/organization/:slug/:mode'], (req, res, next) => {
 	const getOrganizationData = Organization.findOne({
 		where: {
-			slug: req.params.slug.toLowerCase()
+			slug: req.params.slug.toLowerCase(),
 		},
 		attributes: {
-			exclude: ['salt', 'hash', 'email', 'createdAt', 'updatedAt']
+			exclude: ['salt', 'hash', 'email', 'createdAt', 'updatedAt'],
 		},
-		include: [{
-			model: Document,
-			as: 'documents',
-		}],
+		include: [
+			{
+				model: Document,
+				as: 'documents',
+			},
+		],
 	});
 
 	return Promise.all([getInitialData(req), getOrganizationData])
-	.then(([initialData, organizationData])=> {
-		if (!organizationData) { throw new Error('Organization Not Found'); }
+		.then(([initialData, organizationData]) => {
+			if (!organizationData) {
+				throw new Error('Organization Not Found');
+			}
 
-		const newInitialData = {
-			...initialData,
-			organizationData: organizationData.toJSON(),
-		};
-		return renderToNodeStream(res,
-			<Html
-				chunkName="Organization"
-				initialData={newInitialData}
-				headerComponents={generateMetaComponents({
-					initialData: newInitialData,
-					title: `${organizationData.name} · Prior Art Archive`,
-					description: organizationData.bio,
-					image: organizationData.avatar,
-				})}
-			>
-				<OrganizationContainer {...newInitialData} />
-			</Html>
-		);
-	})
-	.catch(handleErrors(req, res, next));
+			const newInitialData = {
+				...initialData,
+				organizationData: organizationData.toJSON(),
+			};
+			return renderToNodeStream(
+				res,
+				<Html
+					chunkName="Organization"
+					initialData={newInitialData}
+					headerComponents={generateMetaComponents({
+						initialData: newInitialData,
+						title: `${organizationData.name} · Prior Art Archive`,
+						description: organizationData.bio,
+						image: organizationData.avatar,
+					})}
+				>
+					<OrganizationContainer {...newInitialData} />
+				</Html>,
+			);
+		})
+		.catch(handleErrors(req, res, next));
 });

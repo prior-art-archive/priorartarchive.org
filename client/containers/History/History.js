@@ -16,7 +16,7 @@ class History extends Component {
 	constructor() {
 		super();
 		this.state = {
-			searchHistory: []
+			searchHistory: [],
 		};
 		this.clearHistory = this.clearHistory.bind(this);
 	}
@@ -43,26 +43,23 @@ class History extends Component {
 					<div className="container">
 						<div className="row">
 							<div className="col-12">
-								{!!searchHistory.length &&
+								{!!searchHistory.length && (
 									<div className="button-wrapper">
-										<Button
-											onClick={this.clearHistory}
-											text="Clear History"
-										/>
+										<Button onClick={this.clearHistory} text="Clear History" />
 									</div>
-								}
+								)}
 
 								<h1>History</h1>
-								{!!searchHistory.length &&
-									<p>Your search history is stored locally in your browser. Clearing your history is permanent.</p>
-								}
-								{!searchHistory.length &&
-									<NonIdealState
-										title="Search History Empty"
-										visual="history"
-									/>
-								}
-								{!!searchHistory.length &&
+								{!!searchHistory.length && (
+									<p>
+										Your search history is stored locally in your browser.
+										Clearing your history is permanent.
+									</p>
+								)}
+								{!searchHistory.length && (
+									<NonIdealState title="Search History Empty" visual="history" />
+								)}
+								{!!searchHistory.length && (
 									<HTMLTable striped={true} interactive={true}>
 										<thead>
 											<tr>
@@ -75,25 +72,35 @@ class History extends Component {
 											</tr>
 										</thead>
 										<tbody>
-											{searchHistory.sort((foo, bar)=> {
-												if (foo.searchedAt < bar.searchedAt) { return 1; }
-												if (foo.searchedAt > bar.searchedAt) { return -1; }
-												return 0;
-											}).map((item, index)=> {
-												return (
-													<tr key={item.searchedAt}>
-														<td>{searchHistory.length - index}</td>
-														<td>{item.query}</td>
-														<td>{new Date(item.searchedAt).toString()}</td>
-														<td>{item.totalHits}</td>
-														<td>{item.operator}</td>
-														<td>{item.sources}</td>
-													</tr>
-												);
-											})}
+											{searchHistory
+												.sort((foo, bar) => {
+													if (foo.searchedAt < bar.searchedAt) {
+														return 1;
+													}
+													if (foo.searchedAt > bar.searchedAt) {
+														return -1;
+													}
+													return 0;
+												})
+												.map((item, index) => {
+													return (
+														<tr key={item.searchedAt}>
+															<td>{searchHistory.length - index}</td>
+															<td>{item.query}</td>
+															<td>
+																{new Date(
+																	item.searchedAt,
+																).toString()}
+															</td>
+															<td>{item.totalHits}</td>
+															<td>{item.operator}</td>
+															<td>{item.sources}</td>
+														</tr>
+													);
+												})}
 										</tbody>
 									</HTMLTable>
-								}
+								)}
 							</div>
 						</div>
 					</div>

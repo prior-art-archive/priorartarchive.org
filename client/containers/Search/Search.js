@@ -19,9 +19,8 @@ class Search extends Component {
 	static fetchResults(searchData) {
 		return apiFetch('/api/search', {
 			method: 'POST',
-			body: JSON.stringify(searchData)
-		})
-		.then((searchResults)=> {
+			body: JSON.stringify(searchData),
+		}).then((searchResults) => {
 			const searchHistory = store.get('searchHistory') || [];
 			searchHistory.push({
 				query: searchResults.query,
@@ -29,9 +28,11 @@ class Search extends Component {
 				totalHits: searchResults.total,
 				operator: searchResults.operator,
 				sources: searchData.source.length
-					? searchData.source.map((item)=> {
-						return item.charAt(0).toUpperCase() + item.slice(1);
-					}).join(', ')
+					? searchData.source
+							.map((item) => {
+								return item.charAt(0).toUpperCase() + item.slice(1);
+							})
+							.join(', ')
 					: 'All',
 			});
 			store.set('searchHistory', searchHistory);
@@ -42,11 +43,11 @@ class Search extends Component {
 	// returns true if the two arguments are different
 	// immutable.js was invented for this purpose :-/
 	static updateSearchData(searchData, state) {
-		return !!Object.keys(searchData).find(key => {
+		return !!Object.keys(searchData).find((key) => {
 			// handle the array types separately
 			if (key === 'fileType' || key === 'source') {
 				if (searchData[key].length !== state[key].length) return true;
-				return searchData[key].find(value => !state[key].includes(value));
+				return searchData[key].find((value) => !state[key].includes(value));
 			}
 			return searchData[key] !== state[key];
 		});
@@ -66,7 +67,7 @@ class Search extends Component {
 			}
 		}
 
-		range.forEach(index => {
+		range.forEach((index) => {
 			if (l) {
 				if (index - l === 2) {
 					rangeWithDots.push(l + 1);
@@ -82,20 +83,23 @@ class Search extends Component {
 	}
 
 	static updateUrl(searchData) {
-		const queryString = Object.keys(searchData).map(key => {
-			let value = searchData[key];
-			if (key === 'query') {
-				value = encodeURIComponent(value.trim());
-			} else if (key === 'source') {
-				if (value.length === 0) return null;
-				value = value.join('+');
-			} else if (key === 'fileType') {
-				if (value.length === 0) return null;
-				value = value.map(mime => encodeURIComponent(mime)).join('+');
-			}
-			if (value === searchDefaults[key]) return null;
-			return `${key}=${value}`;
-		}).filter(param => param !== null).join('&');
+		const queryString = Object.keys(searchData)
+			.map((key) => {
+				let value = searchData[key];
+				if (key === 'query') {
+					value = encodeURIComponent(value.trim());
+				} else if (key === 'source') {
+					if (value.length === 0) return null;
+					value = value.join('+');
+				} else if (key === 'fileType') {
+					if (value.length === 0) return null;
+					value = value.map((mime) => encodeURIComponent(mime)).join('+');
+				}
+				if (value === searchDefaults[key]) return null;
+				return `${key}=${value}`;
+			})
+			.filter((param) => param !== null)
+			.join('&');
 
 		window.history.pushState(searchData, '', `/search?${queryString}`);
 		window.scrollTo(0, 0);
@@ -121,7 +125,7 @@ class Search extends Component {
 	}
 
 	componentDidMount() {
-		Search.fetchResults(this.props.searchData).then(result => {
+		Search.fetchResults(this.props.searchData).then((result) => {
 			this.setState({ result, aggregations: result.aggregations });
 		});
 	}
@@ -132,11 +136,13 @@ class Search extends Component {
 			// because our props are never updated?
 			const { searchData } = this.props;
 			Search.updateUrl(searchData);
-			Search.fetchResults(searchData).then(result => this.setState({
-				result,
-				aggregations: result.aggregations,
-				...searchData
-			}));
+			Search.fetchResults(searchData).then((result) =>
+				this.setState({
+					result,
+					aggregations: result.aggregations,
+					...searchData,
+				}),
+			);
 		} else if (!this.state.emptyQueryWarning) {
 			const {
 				result: _,
@@ -148,11 +154,13 @@ class Search extends Component {
 			} = this.state;
 			if (Search.updateSearchData(searchData, state)) {
 				Search.updateUrl(searchData);
-				Search.fetchResults(searchData).then(result => this.setState({
-					result,
-					aggregations: aggregations || result.aggregations,
-					...searchData
-				}));
+				Search.fetchResults(searchData).then((result) =>
+					this.setState({
+						result,
+						aggregations: aggregations || result.aggregations,
+						...searchData,
+					}),
+				);
 			}
 		}
 	}
@@ -214,17 +222,17 @@ class Search extends Component {
 
 		return (
 			<div className="results-content">
-				{result.hits.map(hit => <SearchResult key={hit.id} data={hit} />)}
+				{result.hits.map((hit) => (
+					<SearchResult key={hit.id} data={hit} />
+				))}
 				<div className="page-buttons">
 					<div className="bp3-button-group">
-						{!!this.state.offset &&
+						{!!this.state.offset && (
 							<Button onClick={this.handlePreviousPage} text="Previous" />
-						}
-						{Search.calculationPagination(currentPage, numPages).map((item)=> {
+						)}
+						{Search.calculationPagination(currentPage, numPages).map((item) => {
 							if (item === '...') {
-								return (
-									<Button key={item} className="bp3-disabled" text="..." />
-								);
+								return <Button key={item} className="bp3-disabled" text="..." />;
 							}
 							const className = item === currentPage ? 'bp3-active' : '';
 							return (
@@ -236,9 +244,9 @@ class Search extends Component {
 								/>
 							);
 						})}
-						{currentPage !== numPages &&
+						{currentPage !== numPages && (
 							<Button onClick={this.handleNextPage} text="Next" />
-						}
+						)}
 					</div>
 				</div>
 			</div>
@@ -263,16 +271,16 @@ class Search extends Component {
 				</div> */}
 
 				{/* <h5 className={'filter-header'}>Filter</h5> */}
-				{aggregations && aggregations.source.buckets.length &&
+				{aggregations && aggregations.source.buckets.length && (
 					<div className="filter-block">
 						<h6>Source</h6>
-						{aggregations.source.buckets.map(item => {
+						{aggregations.source.buckets.map((item) => {
 							const { name, slug, count } = item;
 							const nextState = {
 								offset: 0,
 								source: sourceSet.has(slug)
-									? source.filter(elem => elem !== slug)
-									: [...source, slug]
+									? source.filter((elem) => elem !== slug)
+									: [...source, slug],
 							};
 							return (
 								<Checkbox
@@ -289,19 +297,19 @@ class Search extends Component {
 							);
 						})}
 					</div>
-				}
+				)}
 
-				{aggregations && aggregations.fileType.buckets.length &&
+				{aggregations && aggregations.fileType.buckets.length && (
 					<div className="filter-block">
 						<h6>File Type</h6>
-						{aggregations.fileType.buckets.map(item => {
+						{aggregations.fileType.buckets.map((item) => {
 							const { key, doc_count: count } = item;
 							const name = fileTypeMap[key] || key;
 							const nextState = {
 								offset: 0,
 								fileType: fileTypeSet.has(key)
-									? fileType.filter(mime => mime !== key)
-									: [...fileType, key]
+									? fileType.filter((mime) => mime !== key)
+									: [...fileType, key],
 							};
 
 							return (
@@ -319,7 +327,7 @@ class Search extends Component {
 							);
 						})}
 					</div>
-				}
+				)}
 
 				{/* !!result.aggregations.dateRange.buckets.length &&
 					<div className="filter-block">
@@ -387,9 +395,11 @@ class Search extends Component {
 										onOperatorChange={this.handleOperatorChange}
 									/>
 								</form>
-								{this.state.emptyQueryWarning &&
-									<div className="warning">Enter keywords and then click Search</div>
-								}
+								{this.state.emptyQueryWarning && (
+									<div className="warning">
+										Enter keywords and then click Search
+									</div>
+								)}
 							</div>
 						</div>
 						<div className="row">

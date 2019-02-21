@@ -34,7 +34,10 @@ class OrganizationEdit extends Component {
 	}
 
 	onBioChange(evt) {
-		this.setState({ bio: evt.target.value.substring(0, 280).replace(/\n/g, ' '), hasChanged: true });
+		this.setState({
+			bio: evt.target.value.substring(0, 280).replace(/\n/g, ' '),
+			hasChanged: true,
+		});
 	}
 
 	onAvatarChange(val) {
@@ -54,14 +57,14 @@ class OrganizationEdit extends Component {
 		this.setState({ putOrganizationIsLoading: true, putOrganizationError: undefined });
 		return apiFetch('/api/organizations', {
 			method: 'PUT',
-			body: JSON.stringify(newOrganizationObject)
+			body: JSON.stringify(newOrganizationObject),
 		})
-		.then(()=> {
-			window.location.href = `/organization/${this.props.organizationData.slug}`;
-		})
-		.catch((err)=> {
-			this.setState({ putOrganizationIsLoading: false, putOrganizationError: err });
-		});
+			.then(() => {
+				window.location.href = `/organization/${this.props.organizationData.slug}`;
+			})
+			.catch((err) => {
+				this.setState({ putOrganizationIsLoading: false, putOrganizationError: err });
+			});
 	}
 
 	render() {
@@ -71,7 +74,9 @@ class OrganizationEdit extends Component {
 				showTextOnButton: true,
 				// icon: 'bp3-icon-link',
 				value: this.state.website,
-				onChange: (evt)=> { this.setState({ website: evt.target.value, hasChanged: true }); }
+				onChange: (evt) => {
+					this.setState({ website: evt.target.value, hasChanged: true });
+				},
 			},
 		];
 		return (
@@ -101,7 +106,7 @@ class OrganizationEdit extends Component {
 									onChange={this.onBioChange}
 									helperText={`${this.state.bio.length}/280 characters`}
 								/>
-								{expandables.map((item)=> {
+								{expandables.map((item) => {
 									return (
 										<InputField
 											key={`input-field-${item.label}`}
@@ -114,7 +119,12 @@ class OrganizationEdit extends Component {
 								})}
 
 								<div className="buttons">
-									<InputField error={this.state.putOrganizationError && 'Error Saving Details'}>
+									<InputField
+										error={
+											this.state.putOrganizationError &&
+											'Error Saving Details'
+										}
+									>
 										<Button
 											name="create"
 											type="submit"

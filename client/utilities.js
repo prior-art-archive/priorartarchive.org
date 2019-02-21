@@ -22,30 +22,34 @@ export const fileTypeMap = {
 	'application/pdf': 'PDF',
 };
 
-export const slugifyString = (input)=> {
+export const slugifyString = (input) => {
 	if (typeof input !== 'string') {
 		console.error('input is not a valid string');
 		return '';
 	}
 
-	return removeDiacritics(input).replace(/ /g, '-').replace(/[^a-zA-Z0-9-]/gi, '').toLowerCase();
+	return removeDiacritics(input)
+		.replace(/ /g, '-')
+		.replace(/[^a-zA-Z0-9-]/gi, '')
+		.toLowerCase();
 };
 
-export const hydrateWrapper = (Component)=> {
+export const hydrateWrapper = (Component) => {
 	if (typeof window !== 'undefined' && window.location.origin !== 'http://localhost:9001') {
 		FocusStyleManager.onlyShowFocusOnTabs();
 
 		/* Remove any leftover service workers from last PubPub instance */
 		if (window.navigator && navigator.serviceWorker) {
-			navigator.serviceWorker.getRegistrations()
-			.then((registrations)=> {
-				registrations.forEach((registration)=> {
+			navigator.serviceWorker.getRegistrations().then((registrations) => {
+				registrations.forEach((registration) => {
 					registration.unregister();
 				});
 			});
 		}
 
-		const initialData = JSON.parse(document.getElementById('initial-data').getAttribute('data-json'));
+		const initialData = JSON.parse(
+			document.getElementById('initial-data').getAttribute('data-json'),
+		);
 		isPriorArtArchiveProduction = initialData.locationData.isPriorArtArchiveProduction;
 
 		const isDev = window.location.origin.indexOf('localhost:') > -1;
@@ -63,13 +67,14 @@ export const apiFetch = function(path, opts) {
 		...opts,
 		headers: {
 			Accept: 'application/json',
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
 		credentials: 'include',
-	})
-	.then((response)=> {
+	}).then((response) => {
 		if (!response.ok) {
-			return response.json().then((err)=> { throw err; });
+			return response.json().then((err) => {
+				throw err;
+			});
 		}
 		return response.json();
 	});
@@ -87,7 +92,7 @@ export function generateHash(length) {
 }
 
 export const getResizedUrl = function(url) {
-// export const getResizedUrl = function(url, type, dimensions) {
+	// export const getResizedUrl = function(url, type, dimensions) {
 	return url;
 	// if (!url || url.indexOf('https://assets.pubpub.org/') === -1) { return url; }
 	// const extension = url.split('.').pop().toLowerCase();
@@ -103,12 +108,11 @@ export function checkForAsset(url) {
 	let checkCount = 0;
 	const maxCheckCount = 10;
 	const checkInterval = 1000; /* This will check for 10 seconds and then fail */
-	return new Promise((resolve, reject)=> {
-		const checkUrl = ()=> {
+	return new Promise((resolve, reject) => {
+		const checkUrl = () => {
 			fetch(url, {
 				method: 'HEAD',
-			})
-			.then((response)=> {
+			}).then((response) => {
 				if (!response.ok) {
 					if (checkCount < maxCheckCount) {
 						checkCount += 1;
@@ -123,16 +127,24 @@ export function checkForAsset(url) {
 	});
 }
 
-export function s3Upload(file, progressEvent, finishEvent, index, folder, documentId, originalFilename) {
+export function s3Upload(
+	file,
+	progressEvent,
+	finishEvent,
+	index,
+	folder,
+	documentId,
+	originalFilename,
+) {
 	const hasMeta = !!documentId || !!originalFilename;
 	function beginUpload() {
-		const generatedFolderName = isPriorArtArchiveProduction
-			? generateHash(8)
-			: '_testing';
+		const generatedFolderName = isPriorArtArchiveProduction ? generateHash(8) : '_testing';
 		const folderName = folder || generatedFolderName;
 		const extension = file.name !== undefined ? file.name.split('.').pop() : 'jpg';
 
-		const filename = `${folderName}/${Math.floor(Math.random() * 8)}${new Date().getTime()}.${extension}`;
+		const filename = `${folderName}/${Math.floor(
+			Math.random() * 8,
+		)}${new Date().getTime()}.${extension}`;
 		const fileType = file.type !== undefined ? file.type : 'image/jpeg';
 		const formData = new FormData();
 
@@ -149,17 +161,30 @@ export function s3Upload(file, progressEvent, finishEvent, index, folder, docume
 		formData.append('success_action_status', '200');
 		formData.append('file', file);
 		const sendFile = new XMLHttpRequest();
-		sendFile.upload.addEventListener('progress', (evt)=>{
-			progressEvent(evt, index);
-		}, false);
-		sendFile.upload.addEventListener('load', (evt)=>{
-			checkForAsset(`https://s3-external-1.amazonaws.com/assets.priorartarchive.org/${filename}`)
-			.then(()=> {
-				finishEvent(evt, index, file.type, filename, file.name);
-			});
-		}, false);
+		sendFile.upload.addEventListener(
+			'progress',
+			(evt) => {
+				progressEvent(evt, index);
+			},
+			false,
+		);
+		sendFile.upload.addEventListener(
+			'load',
+			(evt) => {
+				checkForAsset(
+					`https://s3-external-1.amazonaws.com/assets.priorartarchive.org/${filename}`,
+				).then(() => {
+					finishEvent(evt, index, file.type, filename, file.name);
+				});
+			},
+			false,
+		);
 
-		sendFile.open('POST', 'https://s3-external-1.amazonaws.com/assets.priorartarchive.org', true);
+		sendFile.open(
+			'POST',
+			'https://s3-external-1.amazonaws.com/assets.priorartarchive.org',
+			true,
+		);
 		sendFile.send(formData);
 	}
 

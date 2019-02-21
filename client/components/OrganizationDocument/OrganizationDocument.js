@@ -13,13 +13,19 @@ const OrganizationDocument = function(props) {
 	const url = props.documentData.url || props.documentData.fileUrl;
 	return (
 		<div className="organization-document-component">
-			<div><b>{name}</b></div>
-			{url &&
-				<div><a href={url}>{url}</a></div>
-			}
-			{!url &&
-				<ProgressBar value={props.documentData.progress === 1 ? null : props.documentData.progress} />
-			}
+			<div>
+				<b>{name}</b>
+			</div>
+			{url && (
+				<div>
+					<a href={url}>{url}</a>
+				</div>
+			)}
+			{!url && (
+				<ProgressBar
+					value={props.documentData.progress === 1 ? null : props.documentData.progress}
+				/>
+			)}
 		</div>
 	);
 };

@@ -57,7 +57,7 @@ const Organization = sequelize.define('Organization', {
 		validate: {
 			isEmail: true,
 			isLowercase: true,
-		}
+		},
 	},
 	website: { type: Sequelize.TEXT },
 	isAuthenticated: { type: Sequelize.BOOLEAN },
@@ -102,7 +102,7 @@ const Signup = sequelize.define('Signup', {
 		validate: {
 			isEmail: true,
 			isLowercase: true,
-		}
+		},
 	},
 	hash: { type: Sequelize.TEXT },
 	count: { type: Sequelize.INTEGER },
@@ -110,8 +110,16 @@ const Signup = sequelize.define('Signup', {
 });
 
 /* Organizations have many Documents. Documents belong to a single Organization */
-Organization.hasMany(Document, { onDelete: 'CASCADE', as: 'documents', foreignKey: 'organizationId' });
-Document.belongsTo(Organization, { onDelete: 'CASCADE', as: 'organization', foreignKey: 'organizationId' });
+Organization.hasMany(Document, {
+	onDelete: 'CASCADE',
+	as: 'documents',
+	foreignKey: 'organizationId',
+});
+Document.belongsTo(Organization, {
+	onDelete: 'CASCADE',
+	as: 'organization',
+	foreignKey: 'organizationId',
+});
 
 const db = {
 	Organization: Organization,

@@ -29,12 +29,20 @@ class Organization extends Component {
 	}
 
 	onDrop(files) {
-		this.setState((prevState)=> {
+		this.setState((prevState) => {
 			const newItems = [];
-			files.forEach((file, index)=> {
+			files.forEach((file, index) => {
 				const fileIndex = index + prevState.items.length;
 				const docId = uuidv4();
-				s3Upload(file, this.onUploadProgress, this.onUploadFinish, fileIndex, `uploads/${this.props.organizationData.id}`, docId, file.name);
+				s3Upload(
+					file,
+					this.onUploadProgress,
+					this.onUploadFinish,
+					fileIndex,
+					`uploads/${this.props.organizationData.id}`,
+					docId,
+					file.name,
+				);
 				newItems.push({
 					name: file.name,
 					progress: 0,
@@ -48,7 +56,7 @@ class Organization extends Component {
 	}
 
 	onUploadProgress(evt, index) {
-		this.setState((prevState)=> {
+		this.setState((prevState) => {
 			const newItems = [...prevState.items];
 			newItems[index].progress = evt.loaded / evt.total;
 			return { items: newItems };
@@ -56,7 +64,7 @@ class Organization extends Component {
 	}
 
 	onUploadFinish(evt, index, type, filename) {
-		this.setState((prevState)=> {
+		this.setState((prevState) => {
 			const url = `https://assets.priorartarchive.org/${filename}`;
 			const newItems = [...prevState.items];
 			newItems[index].url = url;
@@ -76,33 +84,43 @@ class Organization extends Component {
 					loginData={this.props.loginData}
 					locationData={this.props.locationData}
 				>
-					{mode === 'edit' &&
-						<OrganizationEdit
-							organizationData={organizationData}
-						/>
-					}
-					{mode !== 'edit' &&
+					{mode === 'edit' && <OrganizationEdit organizationData={organizationData} />}
+					{mode !== 'edit' && (
 						<div>
 							<div className="container narrow">
 								<div className="row">
 									<div className="col-12">
-										<OrganizationHeader organizationData={organizationData} isOrganization={selfProfile} />
+										<OrganizationHeader
+											organizationData={organizationData}
+											isOrganization={selfProfile}
+										/>
 									</div>
 								</div>
 							</div>
 						</div>
-					}
-					{selfProfile &&
+					)}
+					{selfProfile && (
 						<div className="container narrow">
 							<div className="row">
 								<div className="col-12">
 									<div>
 										<h2>SFTP Uploads</h2>
-										<p>To upload files using SFTP - open your FTP client and connect using your username and password to the following server:</p>
+										<p>
+											To upload files using SFTP - open your FTP client and
+											connect using your username and password to the
+											following server:
+										</p>
 										<ul>
-											<li><b>Protocol:</b> SFTP</li>
-											<li><b>Host:</b> s-bd9eb971ea634f51b.server.transfer.us-east-1.amazonaws.com</li>
-											<li><b>Port:</b> 22</li>
+											<li>
+												<b>Protocol:</b> SFTP
+											</li>
+											<li>
+												<b>Host:</b>{' '}
+												s-bd9eb971ea634f51b.server.transfer.us-east-1.amazonaws.com
+											</li>
+											<li>
+												<b>Port:</b> 22
+											</li>
 										</ul>
 									</div>
 									<h2>Drag-and-Drop</h2>
@@ -114,15 +132,25 @@ class Organization extends Component {
 											return (
 												<div
 													{...getRootProps()}
-													className={`dropzone ${isDragActive ? 'dropzone--isActive' : ''}`}
+													className={`dropzone ${
+														isDragActive ? 'dropzone--isActive' : ''
+													}`}
 												>
 													<input {...getInputProps()} />
 													<div className="drag-message">
-														<Icon icon="circle-arrow-up" iconSize={50} />
-														<div className="drag-title">Drag & drop to upload files</div>
-														<div className="drag-details">Or click to browse files</div>
-														<div className="drag-details">PDF or HTML</div>
-
+														<Icon
+															icon="circle-arrow-up"
+															iconSize={50}
+														/>
+														<div className="drag-title">
+															Drag & drop to upload files
+														</div>
+														<div className="drag-details">
+															Or click to browse files
+														</div>
+														<div className="drag-details">
+															PDF or HTML
+														</div>
 													</div>
 												</div>
 											);
@@ -131,18 +159,13 @@ class Organization extends Component {
 								</div>
 							</div>
 						</div>
-					}
+					)}
 					<div className="container narrow">
 						<div className="row">
 							<div className="col-12">
-								{[...this.state.items, ...documents].map((item, index)=> {
+								{[...this.state.items, ...documents].map((item, index) => {
 									const key = `${item.name}-${index}`;
-									return (
-										<OrganizationDocument
-											key={key}
-											documentData={item}
-										/>
-									);
+									return <OrganizationDocument key={key} documentData={item} />;
 								})}
 							</div>
 						</div>

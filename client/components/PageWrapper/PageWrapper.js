@@ -14,25 +14,16 @@ const defaultProps = {
 	hideFooter: false,
 };
 
-const PageWrapper = (props)=> {
+const PageWrapper = (props) => {
 	const loginData = props.loginData;
 
 	return (
 		<div id="page-wrapper-component">
-			<Header
-				locationData={props.locationData}
-				loginData={props.loginData}
-			/>
+			<Header locationData={props.locationData} loginData={props.loginData} />
 
-			<div className="page-content">
-				{props.children}
-			</div>
+			<div className="page-content">{props.children}</div>
 
-			{!props.hideFooter &&
-				<Footer
-					isAdmin={loginData.isAdmin || false}
-				/>
-			}
+			{!props.hideFooter && <Footer isAdmin={loginData.isAdmin || false} />}
 		</div>
 	);
 };

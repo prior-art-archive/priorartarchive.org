@@ -14,7 +14,7 @@ import { sequelize, Organization } from './models';
 const originalRequire = Module.prototype.require;
 Module.prototype.require = function(...args) {
 	if (args[0].indexOf('.scss') > -1) {
-		return ()=>{};
+		return () => {};
 	}
 	return originalRequire.apply(this, args);
 };
@@ -33,31 +33,32 @@ if (process.env.NODE_ENV === 'production') {
 	app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-
 /* --------------------- */
 /* Configure app session */
 /* --------------------- */
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-app.use(session({
-	secret: 'sessionsecret',
-	resave: false,
-	saveUninitialized: false,
-	store: new SequelizeStore({
-		db: sequelize
+app.use(
+	session({
+		secret: 'sessionsecret',
+		resave: false,
+		saveUninitialized: false,
+		store: new SequelizeStore({
+			db: sequelize,
+		}),
+		cookie: {
+			path: '/',
+			/* These are necessary for */
+			/* the api cookie to set */
+			/* ------- */
+			httpOnly: false,
+			secure: false,
+			/* ------- */
+			maxAge: 30 * 24 * 60 * 60 * 1000, // = 30 days.
+		},
 	}),
-	cookie: {
-		path: '/',
-		/* These are necessary for */
-		/* the api cookie to set */
-		/* ------- */
-		httpOnly: false,
-		secure: false,
-		/* ------- */
-		maxAge: 30 * 24 * 60 * 60 * 1000// = 30 days.
-	},
-}));
+);
 
 /* ------------------- */
 /* Configure app login */
@@ -71,7 +72,7 @@ passport.deserializeUser(Organization.deserializeUser());
 /* ------------ */
 /* Handle Error */
 /* ------------ */
-app.use((err, req, res, next)=> {
+app.use((err, req, res, next) => {
 	console.error(`Error!  ${err}`);
 	next();
 });
@@ -87,7 +88,6 @@ app.use('/favicon.ico', express.static('static/favicon.png'));
 app.use('/robots.txt', express.static('static/robots.txt'));
 app.use('/opensearch.xml', express.static('static/opensearch.xml'));
 
-
 /* ------------- */
 /* Import Routes */
 /* ------------- */
@@ -99,7 +99,9 @@ require('./clientRoutes');
 /* ------------ */
 const port = process.env.PORT || 8765;
 app.listen(port, (err) => {
-	if (err) { console.error(err); }
+	if (err) {
+		console.error(err);
+	}
 	console.info('----\n==> 🌎  API is running on port %s', port);
 	console.info('==> 💻  Send requests to http://localhost:%s', port);
 });
