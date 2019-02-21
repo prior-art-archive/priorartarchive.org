@@ -5,6 +5,7 @@ import { remove as removeDiacritics } from 'diacritics';
 
 const isPriorArtArchiveProduction = !!process.env.PRIOR_ART_ARCHIVE_PRODUCTION;
 
+export const isPriorArtV2 = process.env.PRIORT_ART_V2;
 export const operators = ['AND', 'OR', 'ADJ', 'NEAR', 'WITH', 'SAME'];
 export const searchDefaults = {
 	query: '',
