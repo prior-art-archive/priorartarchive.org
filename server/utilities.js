@@ -5,6 +5,7 @@ import { remove as removeDiacritics } from 'diacritics';
 
 const isPriorArtArchiveProduction = !!process.env.PRIOR_ART_ARCHIVE_PRODUCTION;
 
+export const isPriorArtV2 = process.env.PRIORT_ART_V2;
 export const operators = ['AND', 'OR', 'ADJ', 'NEAR', 'WITH', 'SAME'];
 export const searchDefaults = {
 	query: '',
@@ -21,22 +22,24 @@ export const fileTypeMap = {
 	'application/pdf': 'PDF',
 };
 
-export const slugifyString = (input)=> {
+export const slugifyString = (input) => {
 	if (typeof input !== 'string') {
 		console.error('input is not a valid string');
 		return '';
 	}
 
-	return removeDiacritics(input).replace(/ /g, '-').replace(/[^a-zA-Z0-9-]/gi, '').toLowerCase();
+	return removeDiacritics(input)
+		.replace(/ /g, '-')
+		.replace(/[^a-zA-Z0-9-]/gi, '')
+		.toLowerCase();
 };
 
-export const renderToNodeStream = (res, reactElement)=> {
+export const renderToNodeStream = (res, reactElement) => {
 	res.setHeader('content-type', 'text/html');
-	return ReactDOMServer.renderToNodeStream(reactElement)
-	.pipe(res);
+	return ReactDOMServer.renderToNodeStream(reactElement).pipe(res);
 };
 
-export const getInitialData = (req)=> {
+export const getInitialData = (req) => {
 	/* Gather user data */
 	const user = req.user || {};
 	const loginData = {
@@ -53,13 +56,11 @@ export const getInitialData = (req)=> {
 		path: req.path,
 		params: req.params,
 		query: req.query,
-		queryString: req.query
-			? `?${queryString.stringify(req.query)}`
-			: '',
+		queryString: req.query ? `?${queryString.stringify(req.query)}` : '',
 		isPriorArtArchiveProduction: isPriorArtArchiveProduction,
 	};
 
-	return new Promise((resolvePromise)=> {
+	return new Promise((resolvePromise) => {
 		resolvePromise({
 			loginData: loginData,
 			locationData: locationData,
@@ -67,7 +68,13 @@ export const getInitialData = (req)=> {
 	});
 };
 
-export const generateMetaComponents = ({ initialData, title, description, publishedAt, unlisted })=> {
+export const generateMetaComponents = ({
+	initialData,
+	title,
+	description,
+	publishedAt,
+	unlisted,
+}) => {
 	const siteName = 'Prior Art Archive';
 	const url = `https://${initialData.locationData.hostname}${initialData.locationData.path}`;
 	const favicon = `https://${initialData.locationData.hostname}/favicon.png`;
@@ -98,7 +105,11 @@ export const generateMetaComponents = ({ initialData, title, description, publis
 		outputComponents = [
 			...outputComponents,
 			<meta key="u1" property="og:url" content={url} />,
-			<meta key="u2" property="og:type" content={url.indexOf('/pub/') > -1 ? 'article' : 'website'} />,
+			<meta
+				key="u2"
+				property="og:type"
+				content={url.indexOf('/pub/') > -1 ? 'article' : 'website'}
+			/>,
 		];
 	}
 
@@ -140,7 +151,7 @@ export const generateMetaComponents = ({ initialData, title, description, publis
 	if (unlisted) {
 		outputComponents = [
 			...outputComponents,
-			<meta key="un1" name="robots" content="noindex,nofollow" />
+			<meta key="un1" name="robots" content="noindex,nofollow" />,
 		];
 	}
 
@@ -153,9 +164,10 @@ export const generateMetaComponents = ({ initialData, title, description, publis
 	return outputComponents;
 };
 
-export const handleErrors = (req, res, next)=> {
+export const handleErrors = (req, res, next) => {
 	return (err) => {
-		if (err.message === 'Page Not Found' ||
+		if (
+			err.message === 'Page Not Found' ||
 			err.message === 'Pub Not Found' ||
 			err.message === 'User Not Admin' ||
 			err.message === 'User Not Found'
