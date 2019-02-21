@@ -62,6 +62,19 @@ export const hydrateWrapper = (Component) => {
 	}
 };
 
+export const oldSearchFetch = function(opts) {
+	const searchRoute = 'https://docker-usptofe.herokuapp.com/rest/esresults';
+
+	return fetch(searchRoute, opts).then((response) => {
+		if (!response.ok) {
+			return response.json().then((err) => {
+				throw err;
+			});
+		}
+		return response.json();
+	});
+};
+
 export const apiFetch = function(path, opts) {
 	return fetch(path, {
 		...opts,

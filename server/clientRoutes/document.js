@@ -9,11 +9,11 @@ import {
 	getInitialData,
 	handleErrors,
 	generateMetaComponents,
-	isPriorArtV2,
+	useFullV2,
 } from '../utilities';
 
 app.get('/doc/:id', (req, res, next) => {
-	if (!isPriorArtV2) {
+	if (!useFullV2(req)) {
 		return next();
 	}
 	const getDocumentData = Document.findOne({ where: { id: req.params.id } });

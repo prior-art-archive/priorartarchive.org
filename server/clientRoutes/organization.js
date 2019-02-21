@@ -9,6 +9,7 @@ import {
 	getInitialData,
 	handleErrors,
 	generateMetaComponents,
+	useFullV2,
 } from '../utilities';
 
 app.get(['/organization/:slug', '/organization/:slug/:mode'], (req, res, next) => {
@@ -35,7 +36,10 @@ app.get(['/organization/:slug', '/organization/:slug/:mode'], (req, res, next) =
 
 			const newInitialData = {
 				...initialData,
-				organizationData: organizationData.toJSON(),
+				organizationData: {
+					...organizationData.toJSON(),
+					isV2: useFullV2(req),
+				},
 			};
 			return renderToNodeStream(
 				res,

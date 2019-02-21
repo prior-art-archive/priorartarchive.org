@@ -46,8 +46,8 @@ const SearchResult = function(props) {
 		console.log('Invalid Date', props.data.uploadDate, props.data.publicationDate);
 	}
 
-	const documentUrl = `/doc/${props.data.id}`;
 	const fileUrl = props.data.fileUrl;
+	const documentUrl = props.data.id ? `/doc/${props.data.id}` : fileUrl;
 
 	const titleClass = title ? 'title' : 'untitled';
 	const titleText = title || defaultTitle;

@@ -123,6 +123,14 @@ class Organization extends Component {
 											</li>
 										</ul>
 									</div>
+								</div>
+							</div>
+						</div>
+					)}
+					{selfProfile && this.props.organizationData.isV2 && (
+						<div className="container narrow">
+							<div className="row">
+								<div className="col-12">
 									<h2>Drag-and-Drop</h2>
 									<Dropzone
 										onDrop={this.onDrop}
@@ -160,16 +168,20 @@ class Organization extends Component {
 							</div>
 						</div>
 					)}
-					<div className="container narrow">
-						<div className="row">
-							<div className="col-12">
-								{[...this.state.items, ...documents].map((item, index) => {
-									const key = `${item.name}-${index}`;
-									return <OrganizationDocument key={key} documentData={item} />;
-								})}
+					{this.props.organizationData.isV2 && (
+						<div className="container narrow">
+							<div className="row">
+								<div className="col-12">
+									{[...this.state.items, ...documents].map((item, index) => {
+										const key = `${item.name}-${index}`;
+										return (
+											<OrganizationDocument key={key} documentData={item} />
+										);
+									})}
+								</div>
 							</div>
 						</div>
-					</div>
+					)}
 				</PageWrapper>
 			</div>
 		);

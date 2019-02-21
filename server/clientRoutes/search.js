@@ -1,4 +1,5 @@
 import React from 'react';
+import OldSearch from 'containers/OldSearch/OldSearch';
 import Search from 'containers/Search/Search';
 import Html from '../Html';
 import app from '../server';
@@ -9,6 +10,7 @@ import {
 	generateMetaComponents,
 	operators,
 	searchDefaults,
+	useFullV2,
 } from '../utilities';
 
 const operatorSet = new Set(operators);
@@ -21,7 +23,7 @@ app.get('/search', (req, res, next) => {
 			const operator = operatorSet.has(params.operator)
 				? params.operator
 				: searchDefaults.operator;
-			const sort = params.sort || searchDefaults.date;
+			const sort = params.sort || searchDefaults.sort;
 			const range = params.range || searchDefaults.range;
 			const offset = Number(params.offset) || searchDefaults.offset;
 			const fileType = params.fileType
@@ -40,20 +42,28 @@ app.get('/search', (req, res, next) => {
 
 			const newInitialData = {
 				...initialData,
-				searchData: { query, operator, sort, range, fileType, source, offset },
+				searchData: {
+					query: query,
+					operator: operator,
+					sort: sort,
+					range: range,
+					fileType: fileType,
+					source: source,
+					offset: offset,
+				},
 			};
-
 			return renderToNodeStream(
 				res,
 				<Html
-					chunkName="Search"
+					chunkName={useFullV2(req) ? 'Search' : 'OldSearch'}
 					initialData={newInitialData}
 					headerComponents={generateMetaComponents({
 						initialData: newInitialData,
 						title: 'Search · Prior Art Archive',
 					})}
 				>
-					<Search {...newInitialData} />
+					{useFullV2(req) && <Search {...newInitialData} />}
+					{!useFullV2(req) && <OldSearch {...newInitialData} />}
 				</Html>,
 			);
 		})
