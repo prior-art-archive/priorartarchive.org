@@ -8,7 +8,8 @@ const isPriorArtArchiveProduction = !!process.env.PRIOR_ART_ARCHIVE_PRODUCTION;
 export const useFullV2 = (req) => {
 	if (
 		req.hostname.indexOf('localhost') > -1 ||
-		req.hostname.indexOf('dev-v2.priorartarchive.org') > -1
+		req.hostname.indexOf('dev-v2.priorartarchive.org') > -1 ||
+		req.hostname.indexOf('v2.priorartarchive.org') > -1
 	) {
 		return true;
 	}
