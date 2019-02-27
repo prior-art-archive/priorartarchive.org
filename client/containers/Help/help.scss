@@ -1,4 +1,4 @@
-#about-container {
+#help-container {
 	.page-content {
 		padding: 2em 0em;
 		h2 {
@@ -7,11 +7,15 @@
 		p {
 			margin-bottom: 2em;
 			font-size: 1.125rem;
-		    line-height: 1.6;
+			line-height: 1.6;
 		}
 		li {
-		    font-size: 1.125rem;
-		    line-height: 1.6;
+			font-size: 1.125rem;
+			line-height: 1.6;
+			padding-bottom: 2em;
+			li {
+				padding-bottom: 0em;
+			}
 		}
 		pre {
 			margin: 0px;
@@ -19,6 +23,12 @@
 			padding: 0px;
 			border-radius: 0px;
 			font-size: 1.125rem;
+		}
+		.example {
+			// font-style: italic;
+			padding-left: 2em;
+			font-size: 0.9em;
+			color: #4286f4;
 		}
 	}
 }
