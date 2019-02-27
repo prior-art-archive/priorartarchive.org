@@ -532,7 +532,6 @@ class OldSearch extends Component {
 				<PageWrapper
 					loginData={this.props.loginData}
 					locationData={this.props.locationData}
-					hideFooter={true}
 				>
 					<div className="container">
 						<div className="row">

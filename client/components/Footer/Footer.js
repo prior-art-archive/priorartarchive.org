@@ -12,7 +12,7 @@ const Footer = function() {
 		{
 			id: 2,
 			title: 'Code',
-			url: 'https://github.com/underlay/prior-art-archive-site',
+			url: 'https://github.com/knowledgefutures/prior-art-site',
 		},
 		{
 			id: 3,
@@ -32,22 +32,12 @@ const Footer = function() {
 	];
 
 	return (
-		<div className="footer-component">
+		<div className="footer">
 			<div className="container">
 				<div className="row">
 					<div className="col-12">
 						<ul>
 							{links.map((link) => {
-								if (
-									link.url.indexOf('https:') > -1 ||
-									link.url.indexOf('mailto:') > -1
-								) {
-									return (
-										<li key={`footer-item-${link.id}`}>
-											<a href={link.url}>{link.title}</a>
-										</li>
-									);
-								}
 								return (
 									<li key={`footer-item-${link.id}`}>
 										<a href={link.url}>{link.title}</a>
