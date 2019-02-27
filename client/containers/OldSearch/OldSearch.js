@@ -5,7 +5,7 @@ import PageWrapper from 'components/PageWrapper/PageWrapper';
 import SearchBar from 'components/SearchBar/SearchBar';
 import SearchResult from 'components/SearchResult/SearchResult';
 import { oldSearchFetch, hydrateWrapper, searchDefaults, fileTypeMap } from 'utilities';
-import { Radio, RadioGroup, Checkbox, Button } from '@blueprintjs/core';
+import { Radio, RadioGroup, Checkbox, Button, Spinner } from '@blueprintjs/core';
 
 require('./oldSearch.scss');
 
@@ -16,8 +16,180 @@ const propTypes = {
 };
 
 class OldSearch extends Component {
-	static fetchResults(searchData) {
-		console.log(searchData);
+	// returns true if the two arguments are different
+	// immutable.js was invented for this purpose :-/
+	static compareSearchData(searchData, state) {
+		return !!Object.keys(searchData)
+			.filter((key) => {
+				return key !== 'isLoading';
+			})
+			.find((key) => {
+				// handle the array types separately
+				if (key === 'fileType' || key === 'source') {
+					if (searchData[key].length !== state[key].length) return true;
+					return searchData[key].find((value) => !state[key].includes(value));
+				}
+				return searchData[key] !== state[key];
+			});
+	}
+
+	static calculationPagination(current, last) {
+		const delta = 2;
+		const left = current - delta;
+		const right = current + delta + 1;
+		const range = [];
+		const rangeWithDots = [];
+		let l;
+
+		for (let index = 1; index <= last; index += 1) {
+			if (index === 1 || index === last || (index >= left && index < right)) {
+				range.push(index);
+			}
+		}
+
+		range.forEach((index) => {
+			if (l) {
+				if (index - l === 2) {
+					rangeWithDots.push(l + 1);
+				} else if (index - l !== 1) {
+					rangeWithDots.push('...');
+				}
+			}
+			rangeWithDots.push(index);
+			l = index;
+		});
+
+		return rangeWithDots;
+	}
+
+	static updateUrl(searchData) {
+		const queryString = Object.keys(searchData)
+			.filter((key) => {
+				return key !== 'isLoading';
+			})
+			.map((key) => {
+				let value = searchData[key];
+				if (key === 'query') {
+					value = encodeURIComponent(value.trim());
+				} else if (key === 'source') {
+					if (value.length === 0) return null;
+					value = value.join('+');
+				} else if (key === 'fileType') {
+					if (value.length === 0) return null;
+					value = value.map((mime) => encodeURIComponent(mime)).join('+');
+				}
+				if (value === searchDefaults[key]) return null;
+				return `${key}=${value}`;
+			})
+			.filter((param) => param !== null)
+			.join('&');
+
+		window.history.pushState(searchData, '', `/search?${queryString}`);
+		window.scrollTo(0, 0);
+	}
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			isLoading: false,
+			error: null,
+			result: null,
+			aggregations: null,
+			queryValue: props.searchData.query,
+			operatorValue: props.searchData.operator,
+			emptyQueryWarning: props.searchData.query.trim() === '',
+			...props.searchData,
+		};
+
+		this.handleQueryChange = this.handleQueryChange.bind(this);
+		this.handleOperatorChange = this.handleOperatorChange.bind(this);
+		this.handleSearch = this.handleSearch.bind(this);
+		this.handleNextPage = this.handleNextPage.bind(this);
+		this.handlePreviousPage = this.handlePreviousPage.bind(this);
+		this.fetchResults = this.fetchResults.bind(this);
+	}
+
+	componentDidMount() {
+		this.fetchResults(this.props.searchData)
+			.then((result) => {
+				if (result) {
+					this.setState({ error: null, result, aggregations: result.aggregations });
+				}
+			})
+			.catch((error) => {
+				this.setState({ error, result: null, aggregations: null });
+			});
+
+		// Set initial state object
+		window.history.replaceState(this.props.searchData, '');
+
+		// Since we use history.pushState we should attach a handler for popState too
+		window.addEventListener('popstate', ({ state }) =>
+			this.setState({
+				queryValue: state.query,
+				operatorValue: state.operator,
+				...state,
+			}),
+		);
+	}
+
+	componentDidUpdate(props, state) {
+		if (props.locationData.queryString !== this.props.locationData.queryString) {
+			// I don't think this will ever happen
+			// because our props are never updated?
+			const { searchData } = this.props;
+			OldSearch.updateUrl(searchData);
+			this.fetchResults(searchData)
+				.then((result) => {
+					if (result) {
+						this.setState({
+							error: null,
+							result,
+							aggregations: result.aggregations,
+							...searchData,
+						});
+					}
+				})
+				.catch((error) => {
+					this.setState({ error, result: null, aggregations: null });
+				});
+		} else if (!this.state.emptyQueryWarning) {
+			const {
+				error: _error,
+				result: _result,
+				emptyQueryWarning,
+				queryValue,
+				operatorValue,
+				aggregations,
+				...searchData
+			} = this.state;
+			if (OldSearch.compareSearchData(searchData, state)) {
+				OldSearch.updateUrl(searchData);
+				this.fetchResults(searchData)
+					.then((result) => {
+						if (result) {
+							this.setState({
+								error: null,
+								result,
+								aggregations: aggregations || result.aggregations,
+								...searchData,
+							});
+						}
+					})
+					.catch((error) => {
+						this.setState({ error, result: null, aggregations: null });
+					});
+			}
+		}
+	}
+
+	setOffset(offset) {
+		this.setState({ offset });
+	}
+
+	fetchResults(searchData) {
+		// console.log(searchData);
 		// return apiFetch('/api/search', {
 		// 	method: 'POST',
 		// 	body: JSON.stringify(searchData),
@@ -71,7 +243,7 @@ class OldSearch extends Component {
 				filterData: searchData.source,
 			});
 		}
-
+		this.setState({ isLoading: true });
 		return oldSearchFetch({
 			method: 'POST',
 			headers: {
@@ -102,170 +274,10 @@ class OldSearch extends Component {
 			})
 			.catch((error) => {
 				throw error;
-			});
-	}
-
-	// returns true if the two arguments are different
-	// immutable.js was invented for this purpose :-/
-	static compareSearchData(searchData, state) {
-		return !!Object.keys(searchData).find((key) => {
-			// handle the array types separately
-			if (key === 'fileType' || key === 'source') {
-				if (searchData[key].length !== state[key].length) return true;
-				return searchData[key].find((value) => !state[key].includes(value));
-			}
-			return searchData[key] !== state[key];
-		});
-	}
-
-	static calculationPagination(current, last) {
-		const delta = 2;
-		const left = current - delta;
-		const right = current + delta + 1;
-		const range = [];
-		const rangeWithDots = [];
-		let l;
-
-		for (let index = 1; index <= last; index += 1) {
-			if (index === 1 || index === last || (index >= left && index < right)) {
-				range.push(index);
-			}
-		}
-
-		range.forEach((index) => {
-			if (l) {
-				if (index - l === 2) {
-					rangeWithDots.push(l + 1);
-				} else if (index - l !== 1) {
-					rangeWithDots.push('...');
-				}
-			}
-			rangeWithDots.push(index);
-			l = index;
-		});
-
-		return rangeWithDots;
-	}
-
-	static updateUrl(searchData) {
-		const queryString = Object.keys(searchData)
-			.map((key) => {
-				let value = searchData[key];
-				if (key === 'query') {
-					value = encodeURIComponent(value.trim());
-				} else if (key === 'source') {
-					if (value.length === 0) return null;
-					value = value.join('+');
-				} else if (key === 'fileType') {
-					if (value.length === 0) return null;
-					value = value.map((mime) => encodeURIComponent(mime)).join('+');
-				}
-				if (value === searchDefaults[key]) return null;
-				return `${key}=${value}`;
 			})
-			.filter((param) => param !== null)
-			.join('&');
-
-		window.history.pushState(searchData, '', `/search?${queryString}`);
-		window.scrollTo(0, 0);
-	}
-
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			error: null,
-			result: null,
-			aggregations: null,
-			queryValue: props.searchData.query,
-			operatorValue: props.searchData.operator,
-			emptyQueryWarning: props.searchData.query.trim() === '',
-			...props.searchData,
-		};
-
-		this.handleQueryChange = this.handleQueryChange.bind(this);
-		this.handleOperatorChange = this.handleOperatorChange.bind(this);
-		this.handleSearch = this.handleSearch.bind(this);
-		this.handleNextPage = this.handleNextPage.bind(this);
-		this.handlePreviousPage = this.handlePreviousPage.bind(this);
-	}
-
-	componentDidMount() {
-		OldSearch.fetchResults(this.props.searchData)
-			.then((result) => {
-				if (result) {
-					this.setState({ error: null, result, aggregations: result.aggregations });
-				}
-			})
-			.catch((error) => {
-				this.setState({ error, result: null, aggregations: null });
+			.finally(() => {
+				this.setState({ isLoading: false });
 			});
-
-		// Set initial state object
-		window.history.replaceState(this.props.searchData, '');
-
-		// Since we use history.pushState we should attach a handler for popState too
-		window.addEventListener('popstate', ({ state }) =>
-			this.setState({
-				queryValue: state.query,
-				operatorValue: state.operator,
-				...state,
-			}),
-		);
-	}
-
-	componentDidUpdate(props, state) {
-		if (props.locationData.queryString !== this.props.locationData.queryString) {
-			// I don't think this will ever happen
-			// because our props are never updated?
-			const { searchData } = this.props;
-			OldSearch.updateUrl(searchData);
-			OldSearch.fetchResults(searchData)
-				.then((result) => {
-					if (result) {
-						this.setState({
-							error: null,
-							result,
-							aggregations: result.aggregations,
-							...searchData,
-						});
-					}
-				})
-				.catch((error) => {
-					this.setState({ error, result: null, aggregations: null });
-				});
-		} else if (!this.state.emptyQueryWarning) {
-			const {
-				error: _error,
-				result: _result,
-				emptyQueryWarning,
-				queryValue,
-				operatorValue,
-				aggregations,
-				...searchData
-			} = this.state;
-			if (OldSearch.compareSearchData(searchData, state)) {
-				OldSearch.updateUrl(searchData);
-				OldSearch.fetchResults(searchData)
-					.then((result) => {
-						if (result) {
-							this.setState({
-								error: null,
-								result,
-								aggregations: aggregations || result.aggregations,
-								...searchData,
-							});
-						}
-					})
-					.catch((error) => {
-						this.setState({ error, result: null, aggregations: null });
-					});
-			}
-		}
-	}
-
-	setOffset(offset) {
-		this.setState({ offset });
 	}
 
 	handleSearch(event) {
@@ -369,6 +381,9 @@ class OldSearch extends Component {
 
 	renderFilters() {
 		const { source, fileType, result } = this.state;
+		if (result.usptoResponses.length === 0) {
+			return null;
+		}
 		const sourceSet = new Set(source);
 		const fileTypeSet = new Set(fileType);
 
@@ -512,7 +527,6 @@ class OldSearch extends Component {
 
 	render() {
 		const { result } = this.state;
-
 		return (
 			<div id="old-search-container">
 				<PageWrapper
@@ -540,11 +554,9 @@ class OldSearch extends Component {
 						</div>
 						<div className="row">
 							<div className="col-12 results">
-								{/* {isLoading &&
-										<Spinner />
-								} */}
-								{this.renderResults()}
-								{result && this.renderFilters()}
+								{this.state.isLoading && <Spinner />}
+								{!this.state.isLoading && this.renderResults()}
+								{!this.state.isLoading && result && this.renderFilters()}
 							</div>
 						</div>
 					</div>

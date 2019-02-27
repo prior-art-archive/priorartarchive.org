@@ -43,7 +43,7 @@ const SearchResult = function(props) {
 		uploadDate = props.data.uploadDate.replace(/[+-]{1}[0-9]{4}$/, '');
 		publicationDate = props.data.publicationDate.replace(/[+-]{1}[0-9]{4}$/, '');
 	} catch (err) {
-		console.log('Invalid Date', props.data.uploadDate, props.data.publicationDate);
+		// console.log('Invalid Date', props.data.uploadDate, props.data.publicationDate);
 	}
 
 	const fileUrl = props.data.fileUrl;
