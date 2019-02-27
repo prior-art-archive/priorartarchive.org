@@ -46,16 +46,18 @@ class Login extends Component {
 			});
 		}
 
+		const slug = this.slugRef.current.value.toLowerCase();
 		this.setState({ loginLoading: true, loginError: undefined });
 		return apiFetch('/api/login', {
 			method: 'POST',
 			body: JSON.stringify({
-				slug: this.slugRef.current.value.toLowerCase(),
+				slug: slug,
 				password: SHA3(this.passwordRef.current.value).toString(encHex),
 			}),
 		})
 			.then(() => {
-				window.location.href = this.props.locationData.query.redirect || '/';
+				window.location.href =
+					this.props.locationData.query.redirect || `/organization/${slug}`;
 			})
 			.catch(() => {
 				this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });

@@ -115,8 +115,7 @@ class Organization extends Component {
 												<b>Protocol:</b> SFTP
 											</li>
 											<li>
-												<b>Host:</b>{' '}
-												s-bd9eb971ea634f51b.server.transfer.us-east-1.amazonaws.com
+												<b>Host:</b> sftp.priorartarchive.org
 											</li>
 											<li>
 												<b>Port:</b> 22

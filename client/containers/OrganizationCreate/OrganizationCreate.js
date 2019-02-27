@@ -59,7 +59,7 @@ class OrganizationCreate extends Component {
 			}),
 		})
 			.then(() => {
-				window.location.href = '/';
+				window.location.href = `/organization/${this.state.slug}`;
 			})
 			.catch((err) => {
 				this.setState({ postOrganizationIsLoading: false, postOrganizationError: err });
