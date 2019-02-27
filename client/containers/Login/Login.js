@@ -56,8 +56,8 @@ class Login extends Component {
 			}),
 		})
 			.then(() => {
-				window.location.href =
-					this.props.locationData.query.redirect || `/organization/${slug}`;
+				// window.location.href = this.props.locationData.query.redirect;
+				window.location.href = `/organization/${slug}`;
 			})
 			.catch(() => {
 				this.setState({ loginLoading: false, loginError: 'Invalid Username or Password' });
