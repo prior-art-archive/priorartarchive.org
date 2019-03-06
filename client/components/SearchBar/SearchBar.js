@@ -27,7 +27,7 @@ const SearchBar = function(props) {
 					/>
 				</div>
 			</div>
-			<button type="button" className="bp3-button bp3-intent-primary">
+			<button type="submit" className="bp3-button bp3-intent-primary">
 				Search
 			</button>
 			<div className="bp3-select bp3-large">
