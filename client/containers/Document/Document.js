@@ -27,7 +27,7 @@ const Document = function(props) {
 									{title || placeholderTitle}
 								</h1>
 							</header>
-							<section className={!!description || 'placeholder'}>
+							<section className={description ? '' : 'placeholder'}>
 								{description || placeholderDescription}
 							</section>
 							<pre>
