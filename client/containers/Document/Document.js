@@ -23,7 +23,7 @@ const Document = function(props) {
 					<div className="row">
 						<div className="col-12">
 							<header>
-								<h1 className={!!title || 'placeholder'}>
+								<h1 className={title ? '' : 'placeholder'}>
 									{title || placeholderTitle}
 								</h1>
 							</header>
