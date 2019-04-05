@@ -5,6 +5,7 @@ import Overlay from 'components/Overlay/Overlay';
 import ImageCropper from 'components/ImageCropper/ImageCropper';
 import Icon from 'components/Icon/Icon';
 import { s3Upload } from 'utilities';
+import { getS3Bucket } from '../../utilities';
 
 require('./imageUpload.scss');
 
@@ -53,7 +54,8 @@ class ImageUpload extends Component {
 	}
 
 	onUploadFinish(evt, index, type, filename) {
-		const newImageUrl = `https://assets.priorartarchive.org/${filename}`;
+		const bucket = getS3Bucket();
+		const newImageUrl = `https://${bucket}/${filename}`;
 		this.setState({
 			uploading: false,
 		});

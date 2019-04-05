@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Slider } from '@blueprintjs/core';
 import AvatarEditor from 'react-avatar-editor';
-import { s3Upload } from 'utilities';
+import { s3Upload, getS3Bucket } from 'utilities';
 
 require('./imageCropper.scss');
 
@@ -41,7 +41,8 @@ class ImageCropper extends Component {
 			isUploading: false,
 			scale: 1.5,
 		});
-		this.props.onUploaded(`https://assets.priorartarchive.org/${filename}`, this.state.blob);
+		const bucket = getS3Bucket();
+		this.props.onUploaded(`https://${bucket}/${filename}`, this.state.blob);
 	}
 
 	handleScaleChange(val) {

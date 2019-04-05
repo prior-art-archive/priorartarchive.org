@@ -8,10 +8,15 @@ const awsDetails = {
 };
 
 app.get('/api/uploadPolicy', (req, res) => {
+	const bucket =
+		req.hostname === 'localhost' || req.hostname === 'dev-v2.priorartarchive.org'
+			? 'assets.dev.priorartarchive.org'
+			: 'assets.priorartarchive.org';
+
 	const s3 = {
 		access_key: awsDetails.accessKeyAws,
 		secret_key: awsDetails.secretKeyAws,
-		bucket: 'assets.priorartarchive.org',
+		bucket: bucket,
 		acl: 'public-read',
 		https: 'true',
 		error_message: '',
@@ -20,7 +25,6 @@ app.get('/api/uploadPolicy', (req, res) => {
 		},
 	};
 
-	const bucket = s3.bucket; // the name you've chosen for the bucket
 	const key = '/${filename}'; // the folder and adress where the file will be uploaded; ${filename} will be replaced by original file name (the folder needs to be public on S3!)
 	const successActionRedirect = 'http://localhost:3000/upload/success'; // URL that you will be redirected to when the file will be successfully uploaded
 	const contentType = req.query.contentType; // limit accepted content types; empty will disable the filter; for example: 'image/', 'image/png'

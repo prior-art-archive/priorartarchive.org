@@ -6,6 +6,14 @@ import { remove as removeDiacritics } from 'diacritics';
 
 let isPriorArtArchiveProduction = false;
 
+export function getS3Bucket() {
+	const { hostname } = window.location;
+	if (hostname === 'localhost' || hostname === 'dev-v2.priorartarchive.org') {
+		return 'assets.dev.priorartarchive.org';
+	}
+	return 'assets.priorartarchive.org';
+}
+
 export const operators = ['AND', 'OR', 'ADJ', 'NEAR', 'WITH', 'SAME'];
 export const searchDefaults = {
 	query: '',
@@ -151,6 +159,7 @@ export function s3Upload(
 ) {
 	const hasMeta = !!documentId || !!originalFilename;
 	function beginUpload() {
+		const bucket = getS3Bucket();
 		const generatedFolderName = isPriorArtArchiveProduction ? generateHash(8) : '_testing';
 		const folderName = folder || generatedFolderName;
 		const extension = file.name !== undefined ? file.name.split('.').pop() : 'jpg';
@@ -184,20 +193,16 @@ export function s3Upload(
 		sendFile.upload.addEventListener(
 			'load',
 			(evt) => {
-				checkForAsset(
-					`https://s3-external-1.amazonaws.com/assets.priorartarchive.org/${filename}`,
-				).then(() => {
-					finishEvent(evt, index, file.type, filename, file.name);
-				});
+				checkForAsset(`https://s3-external-1.amazonaws.com/${bucket}/${filename}`).then(
+					() => {
+						finishEvent(evt, index, file.type, filename, file.name);
+					},
+				);
 			},
 			false,
 		);
 
-		sendFile.open(
-			'POST',
-			'https://s3-external-1.amazonaws.com/assets.priorartarchive.org',
-			true,
-		);
+		sendFile.open('POST', `https://s3-external-1.amazonaws.com/${bucket}`, true);
 		sendFile.send(formData);
 	}
 

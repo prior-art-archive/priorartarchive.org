@@ -8,6 +8,7 @@ import OrganizationEdit from 'components/OrganizationEdit/OrganizationEdit';
 import OrganizationDocument from 'components/OrganizationDocument/OrganizationDocument';
 import PageWrapper from 'components/PageWrapper/PageWrapper';
 import { hydrateWrapper, s3Upload } from 'utilities';
+import { getS3Bucket } from '../../utilities';
 
 require('./organization.scss');
 
@@ -65,7 +66,8 @@ class Organization extends Component {
 
 	onUploadFinish(evt, index, type, filename) {
 		this.setState((prevState) => {
-			const url = `https://assets.priorartarchive.org/${filename}`;
+			const bucket = getS3Bucket();
+			const url = `https://${bucket}/${filename}`;
 			const newItems = [...prevState.items];
 			newItems[index].url = url;
 			return { items: newItems };
