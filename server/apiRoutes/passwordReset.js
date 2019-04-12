@@ -52,10 +52,9 @@ app.put('/api/password-reset', (req, res) => {
 		? { id: organization.id }
 		: { resetHash: resetHash, slug: slug };
 
-	organization
-		.findOne({
-			where: whereQuery,
-		})
+	Organization.findOne({
+		where: whereQuery,
+	})
 		.then((organizationData) => {
 			if (!organizationData) {
 				throw new Error("organization doesn't exist");
