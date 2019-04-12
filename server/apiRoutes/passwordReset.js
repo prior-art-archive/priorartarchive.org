@@ -38,7 +38,7 @@ app.post('/api/password-reset', (req, res) => {
 		})
 		.catch((err) => {
 			console.error('Error resetting password post', err);
-			return res.status(401).json('Error resseting password.');
+			return res.status(401).json('Email address not recognized.');
 		});
 });
 
