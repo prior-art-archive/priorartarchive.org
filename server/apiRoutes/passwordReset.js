@@ -6,7 +6,7 @@ import { sendPasswordResetEmail } from '../emailHelpers';
 
 app.post('/api/password-reset', (req, res) => {
 	Organization.findOne({
-		where: { slug: req.body.slug },
+		where: { email: req.body.email },
 	})
 		.then((organization) => {
 			if (!organization) {
@@ -27,6 +27,7 @@ app.post('/api/password-reset', (req, res) => {
 			const updatedOrganization = updatedOrganizationData[1][0];
 			return sendPasswordResetEmail({
 				toEmail: updatedOrganization.email,
+				slug: updatedOrganization.slug,
 				resetUrl: `https://${req.hostname}/password-reset/${
 					updatedOrganization.resetHash
 				}/${updatedOrganization.slug}`,

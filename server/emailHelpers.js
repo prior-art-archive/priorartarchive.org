@@ -6,13 +6,13 @@ const mg = mailgun.client({
 	key: process.env.MAILGUN_API_KEY,
 });
 
-export const sendPasswordResetEmail = ({ toEmail, resetUrl }) => {
+export const sendPasswordResetEmail = ({ toEmail, slug, resetUrl }) => {
 	return mg.messages.create('mg.priorartarchive.org', {
 		from: 'Prior Art Archive Team <team@priorartarchive.org>',
 		to: [toEmail],
 		subject: 'Password Reset · Prior Art Archive',
 		text: stripIndent(`
-			We've received a password reset request. Follow the link below to reset your password.
+			We've received a password reset request. Follow the link below to reset the password for the account with username '${slug}'.
 
 			${resetUrl}
 
