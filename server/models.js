@@ -83,6 +83,7 @@ const Document = sequelize.define('Document', {
 	fileName: { type: Sequelize.TEXT },
 	contentType: { type: Sequelize.TEXT },
 	organizationId: { type: Sequelize.UUID, allowNull: false },
+	cpcCodes: { type: Sequelize.ARRAY(Sequelize.TEXT) },
 });
 
 const Assertion = sequelize.define('Assertion', {
