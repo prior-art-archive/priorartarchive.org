@@ -67,7 +67,10 @@ const SearchResult = function(props) {
 					dangerouslySetInnerHTML={{ __html: highlight.text.join('... ') }}
 				/>
 			)}
-			<div className="source">Source: {props.data.sourceName}</div>
+			<div className="source">
+				Source:{' '}
+				<a href={`/organization/${props.data.sourceSlug}`}>{props.data.sourceName}</a>
+			</div>
 			{uploadDate && (
 				<div className="date">Uploaded: {dateFormat(uploadDate, 'mmmm dS, yyyy')}</div>
 			)}

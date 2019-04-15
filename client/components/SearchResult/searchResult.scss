@@ -1,9 +1,9 @@
 .search-result-wrapper {
 	padding-bottom: 2em;
 	margin-bottom: 2em;
-	border-bottom: 1px solid #DDD;
+	border-bottom: 1px solid #ddd;
 	&:last-of-type {
-		border-bottom: 0px solid #DDD;
+		border-bottom: 0px solid #ddd;
 	}
 	.title {
 		font-size: 1.2em;
@@ -20,7 +20,7 @@
 
 	.url {
 		margin: 0px 0px;
-		color: #1E9F40;
+		color: #1e9f40;
 	}
 	.description {
 		margin: 10px 0px;
@@ -28,18 +28,25 @@
 	.description em {
 		font-weight: 500;
 	}
-	.source, .date {
+	.source,
+	.date {
 		display: inline-block;
 		padding-right: 2em;
 		opacity: 0.75;
 	}
+
+	.source a {
+		color: inherit;
+	}
+
 	.cpc-codes {
 		opacity: 0.75;
 		padding-top: 10px;
-		span, .bp3-tag {
+		span,
+		.bp3-tag {
 			margin-right: 8px;
 			margin-bottom: 8px;
-		}	
+		}
 	}
 
 	&.loading {
@@ -57,5 +64,5 @@
 			width: 40%;
 			height: 1em;
 		}
-	}	
+	}
 }
