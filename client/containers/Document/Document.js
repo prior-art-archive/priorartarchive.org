@@ -16,7 +16,7 @@ const propTypes = {
 const placeholderTitle = 'Untitled Document';
 const placeholderDescription = 'No description available.';
 
-const gatewayUrl = 'https://gateway.underlay.store/ipfs/';
+const gatewayUrl = 'https://dev-gateway.underlay.store/ipfs/';
 
 const formatDate = (date) => new Date(date).toISOString().slice(0, 10);
 
