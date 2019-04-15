@@ -74,7 +74,7 @@ const Document = function(props) {
 													<td>{updatedAt}</td>
 												</tr>
 												<tr>
-													<td>Publication Date</td>
+													<td>Published</td>
 													<td>{publicationDate}</td>
 												</tr>
 												<tr>
@@ -104,7 +104,7 @@ const Document = function(props) {
 											<HTMLTable key={assertion.cid} {...tableProps}>
 												<tbody>
 													<tr>
-														<td>Upload date</td>
+														<td>Uploaded</td>
 														<td>{formatDate(assertion.createdAt)}</td>
 													</tr>
 													<tr>
