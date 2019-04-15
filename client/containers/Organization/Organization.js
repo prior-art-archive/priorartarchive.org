@@ -173,12 +173,22 @@ class Organization extends Component {
 						<div className="container narrow">
 							<div className="row">
 								<div className="col-12">
-									{[...this.state.items, ...documents].map((item, index) => {
-										const key = `${item.name}-${index}`;
-										return (
-											<OrganizationDocument key={key} documentData={item} />
-										);
-									})}
+									<h2>Documents</h2>
+									{!(this.state.items && this.state.items.length) &&
+									!(documents && documents.length) ? (
+										<p>No documents uploaded</p>
+									) : null}
+									<ul>
+										{[...this.state.items, ...documents].map((item, index) => {
+											const key = `${item.name}-${index}`;
+											return (
+												<OrganizationDocument
+													key={key}
+													documentData={item}
+												/>
+											);
+										})}
+									</ul>
 								</div>
 							</div>
 						</div>

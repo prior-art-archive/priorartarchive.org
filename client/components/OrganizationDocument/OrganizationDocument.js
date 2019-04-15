@@ -9,24 +9,18 @@ const propTypes = {
 };
 
 const OrganizationDocument = function(props) {
-	const name = props.documentData.name || props.documentData.fileName;
-	const url = props.documentData.url || props.documentData.fileUrl;
+	const name = props.documentData.title || props.documentData.fileName || props.documentData.name;
+	const url = props.documentData.id ? `/doc/${props.documentData.id}` : props.documentData.url;
 	return (
-		<div className="organization-document-component">
-			<div>
-				<b>{name}</b>
-			</div>
-			{url && (
-				<div>
-					<a href={url}>{url}</a>
-				</div>
-			)}
+		<li className="organization-document-component">
+			{url && <a href={url}>{name}</a>}
+			{!url && <div>{name}</div>}
 			{!url && (
 				<ProgressBar
 					value={props.documentData.progress === 1 ? null : props.documentData.progress}
 				/>
 			)}
-		</div>
+		</li>
 	);
 };
 
