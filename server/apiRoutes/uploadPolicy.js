@@ -10,7 +10,7 @@ const awsDetails = {
 app.get('/api/uploadPolicy', (req, res) => {
 	const bucket =
 		req.hostname === 'localhost' || req.hostname === 'dev-v2.priorartarchive.org'
-			? 'assets.dev.priorartarchive.org'
+			? 'dev-assets.priorartarchive.org'
 			: 'assets.priorartarchive.org';
 
 	const s3 = {

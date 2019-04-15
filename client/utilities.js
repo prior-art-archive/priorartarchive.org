@@ -9,7 +9,7 @@ let isPriorArtArchiveProduction = false;
 export function getS3Bucket() {
 	const { hostname } = window.location;
 	if (hostname === 'localhost' || hostname === 'dev-v2.priorartarchive.org') {
-		return 'assets.dev.priorartarchive.org';
+		return 'dev-assets.priorartarchive.org';
 	}
 	return 'assets.priorartarchive.org';
 }
