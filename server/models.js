@@ -80,10 +80,11 @@ const Document = sequelize.define('Document', {
 	title: { type: Sequelize.TEXT },
 	description: { type: Sequelize.TEXT },
 	fileUrl: { type: Sequelize.TEXT },
-	fileName: { type: Sequelize.TEXT },
 	contentType: { type: Sequelize.TEXT },
 	organizationId: { type: Sequelize.UUID, allowNull: false },
 	cpcCodes: { type: Sequelize.ARRAY(Sequelize.TEXT) },
+	language: { type: Sequelize.TEXT },
+	publicationDate: { type: Sequelize.DATE },
 });
 
 const Assertion = sequelize.define('Assertion', {
@@ -92,6 +93,7 @@ const Assertion = sequelize.define('Assertion', {
 	organizationId: { type: Sequelize.UUID, allowNull: false },
 	cid: { type: Sequelize.TEXT },
 	fileCid: { type: Sequelize.TEXT },
+	fileName: { type: Sequelize.TEXT },
 });
 
 const Signup = sequelize.define('Signup', {

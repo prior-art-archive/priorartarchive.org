@@ -3,7 +3,7 @@ import React from 'react';
 import DocumentContainer from 'containers/Document/Document';
 import Html from '../Html';
 import app from '../server';
-import { Document } from '../models';
+import { Document, Assertion, Organization } from '../models';
 import {
 	renderToNodeStream,
 	getInitialData,
@@ -16,18 +16,39 @@ app.get('/doc/:id', (req, res, next) => {
 	if (!useFullV2(req)) {
 		return next();
 	}
-	const getDocumentData = Document.findOne({ where: { id: req.params.id } });
+	const getDocumentData = Document.findByPk(req.params.id).then((document) =>
+		Organization.findByPk(document.organizationId).then((organization) => ({
+			...document.toJSON(),
+			description: document.description,
+			title: document.title,
+			fileUrl: document.fileUrl,
+			organizationName: organization.name,
+			organizationSlug: organization.slug,
+		})),
+	);
 
-	return Promise.all([getInitialData(req), getDocumentData])
-		.then(([initialData, documentData]) => {
+	const getAssertionData = Assertion.findAll({ where: { documentId: req.params.id } }).then(
+		(assertions) =>
+			assertions.map((assertion) => ({
+				cid: assertion.cid,
+				fileCid: assertion.fileCid,
+				fileName: assertion.fileName,
+				createdAt: assertion.createdAt,
+			})),
+	);
+
+	return Promise.all([getInitialData(req), getDocumentData, getAssertionData])
+		.then(([initialData, documentData, assertionData]) => {
 			if (!documentData) {
 				throw new Error('Document Not Found');
 			}
 
 			const newInitialData = {
 				...initialData,
-				documentData: documentData.toJSON(),
+				documentData: documentData,
+				assertionData: assertionData,
 			};
+
 			return renderToNodeStream(
 				res,
 				<Html

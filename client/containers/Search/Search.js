@@ -5,7 +5,7 @@ import PageWrapper from 'components/PageWrapper/PageWrapper';
 import SearchBar from 'components/SearchBar/SearchBar';
 import SearchResult from 'components/SearchResult/SearchResult';
 import { apiFetch, hydrateWrapper, searchDefaults, fileTypeMap } from 'utilities';
-import { Radio, RadioGroup, Checkbox, Button } from '@blueprintjs/core';
+import { Checkbox, Button } from '@blueprintjs/core';
 
 require('./search.scss');
 
@@ -135,11 +135,15 @@ class Search extends Component {
 		Search.fetchResults(this.props.searchData)
 			.then((result) => {
 				if (result) {
-					this.setState({ error: null, result, aggregations: result.aggregations });
+					this.setState({
+						error: null,
+						result: result,
+						aggregations: result.aggregations,
+					});
 				}
 			})
 			.catch((error) => {
-				this.setState({ error, result: null, aggregations: null });
+				this.setState({ error: error, result: null, aggregations: null });
 			});
 
 		// Set initial state object
@@ -166,14 +170,14 @@ class Search extends Component {
 					if (result) {
 						this.setState({
 							error: null,
-							result,
+							result: result,
 							aggregations: result.aggregations,
 							...searchData,
 						});
 					}
 				})
 				.catch((error) => {
-					this.setState({ error, result: null, aggregations: null });
+					this.setState({ error: error, result: null, aggregations: null });
 				});
 		} else if (!this.state.emptyQueryWarning) {
 			const {
@@ -192,21 +196,21 @@ class Search extends Component {
 						if (result) {
 							this.setState({
 								error: null,
-								result,
+								result: result,
 								aggregations: aggregations || result.aggregations,
 								...searchData,
 							});
 						}
 					})
 					.catch((error) => {
-						this.setState({ error, result: null, aggregations: null });
+						this.setState({ error: error, result: null, aggregations: null });
 					});
 			}
 		}
 	}
 
 	setOffset(offset) {
-		this.setState({ offset });
+		this.setState({ offset: offset });
 	}
 
 	handleSearch(event) {
@@ -249,16 +253,17 @@ class Search extends Component {
 
 	renderResults() {
 		const { error, result, offset } = this.state;
-
 		if (error !== null) {
 			console.error(error);
 			return <p className="error">Search failed with an error from the server.</p>;
 		}
+
 		if (result === null) {
 			return null;
 		}
+
 		if (result.total === 0) {
-			return <p>No results found</p>;
+			return <p className="no-results">No results found</p>;
 		}
 
 		const numPages = result && Math.min(Math.ceil(result.total / 10), 1000);
@@ -451,7 +456,7 @@ class Search extends Component {
 										<Spinner />
 								} */}
 								{this.renderResults()}
-								{result && this.renderFilters()}
+								{!!(result && result.total) && this.renderFilters()}
 							</div>
 						</div>
 					</div>

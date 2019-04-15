@@ -16,7 +16,7 @@ const client = new elasticsearch.Client({
 
 const operatorSet = new Set(operators);
 
-const getOrganizationBySlug = (slug) => Organization.findOne({ where: { slug } });
+const getOrganizationBySlug = (slug) => Organization.findOne({ where: { slug: slug } });
 
 const spanQueries = ['span_term', 'span_multi', 'span_near', 'span_or'];
 
@@ -26,10 +26,10 @@ app.post('/api/search', (req, res) => {
 		lambda.invoke(
 			{
 				FunctionName: 'queryParser',
-				Payload: JSON.stringify({ query: query.toLowerCase(), operator }),
+				Payload: JSON.stringify({ query: query.toLowerCase(), operator: operator }),
 			},
 			(err, data) => {
-				new Promise(async (resolve, reject) => {
+				new Promise(async function(resolve, reject) {
 					if (data && data.StatusCode === 200) {
 						const payload = JSON.parse(JSON.parse(data.Payload));
 						if (fileType.length || source.length) {
@@ -106,18 +106,20 @@ app.post('/api/search', (req, res) => {
 							const hits = await Promise.all(
 								response.hits.hits.map((hit) => {
 									const { _id: id, _score: score, highlight } = hit;
-									const { organizationId, ...rest } = hit._source;
+									const {
+										_source: { organizationId, ...rest },
+									} = hit;
 									if (names[organizationId] === undefined) {
 										names[organizationId] = Organization.findByPk(
 											organizationId,
 										);
 									}
 									return names[organizationId].then((org) => ({
-										id,
-										score,
-										sourceSlug: org.slug,
-										sourceName: org.name,
-										highlight,
+										id: id,
+										score: score,
+										sourceSlug: org ? org.slug : null,
+										sourceName: org ? org.name : null,
+										highlight: highlight,
 										...rest,
 									}));
 								}),
@@ -130,12 +132,13 @@ app.post('/api/search', (req, res) => {
 							const namedBuckets = await Promise.all(
 								buckets.map((item) => {
 									const { key, doc_count: count } = item;
-									if (names[key] === undefined)
+									if (names[key] === undefined) {
 										names[key] = Organization.findByPk(key);
+									}
 									return names[key].then((org) => ({
-										name: org.name,
-										slug: org.slug,
-										count,
+										name: org ? org.name : null,
+										slug: org ? org.slug : null,
+										count: count,
 									}));
 								}),
 							).catch(reject);
@@ -151,7 +154,7 @@ app.post('/api/search', (req, res) => {
 								},
 								total: response.hits.total,
 								max_score: response.hits.max_score,
-								hits,
+								hits: hits,
 							});
 						}
 					} else {
@@ -159,7 +162,7 @@ app.post('/api/search', (req, res) => {
 					}
 				})
 					.then((result) => res.status(200).json(result))
-					.catch((error) => res.status(400).json(error));
+					.catch((error) => res.status(400).json(error.toString()));
 			},
 		);
 	} else {
