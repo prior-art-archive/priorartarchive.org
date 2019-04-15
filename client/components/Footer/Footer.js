@@ -12,7 +12,7 @@ const Footer = function() {
 		{
 			id: 2,
 			title: 'Code',
-			url: 'https://github.com/knowledgefutures/prior-art-site',
+			url: 'https://github.com/knowledgefutures/priorart-site',
 		},
 		{
 			id: 3,
