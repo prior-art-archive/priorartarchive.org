@@ -211,3 +211,23 @@ export function s3Upload(
 	getPolicy.open('GET', `/api/uploadPolicy?contentType=${file.type}&hasMeta=${hasMeta}`);
 	getPolicy.send();
 }
+
+export function generateDocumentTitle(stub) {
+	const placeholderTitle = 'Untitled Document';
+	const generatedTitle = {
+		title: placeholderTitle,
+	};
+	if (stub) {
+		if (typeof stub === 'object') {
+			// This needs formalizing and improving. It was plucked from OrganizationDocument.
+			const tryTitle = stub.title || stub.fileName || stub.name;
+			if (tryTitle) {
+				generatedTitle.title = tryTitle;
+			}
+		} else {
+			generatedTitle.title = stub;
+		}
+	}
+	generatedTitle.isPlaceholder = generatedTitle.title === placeholderTitle;
+	return generatedTitle;
+}

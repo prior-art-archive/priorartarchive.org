@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PageWrapper from 'components/PageWrapper/PageWrapper';
-import { hydrateWrapper } from 'utilities';
+import { hydrateWrapper, generateDocumentTitle } from 'utilities';
 import { HTMLTable } from '@blueprintjs/core';
 
 require('./document.scss');
@@ -13,7 +13,6 @@ const propTypes = {
 	assertionData: PropTypes.array.isRequired,
 };
 
-const placeholderTitle = 'Untitled Document';
 const placeholderDescription = 'No description available.';
 
 const gatewayUrl = 'https://dev-gateway.underlay.store/ipfs/';
@@ -36,6 +35,7 @@ const Document = function(props) {
 	const updatedAt = formatDate(props.documentData.updatedAt);
 	const publicationDate = formatDate(props.documentData.publicationDate);
 	const cpcCodes = props.documentData.cpcCodes || [];
+	const generatedTitle = generateDocumentTitle(title);
 	return (
 		<div id="document-container">
 			<PageWrapper loginData={props.loginData} locationData={props.locationData}>
@@ -43,8 +43,8 @@ const Document = function(props) {
 					<div id="flex-container" className="row">
 						<div className="col-12">
 							<header>
-								<h1 className={title ? '' : 'placeholder'}>
-									{title || placeholderTitle}
+								<h1 className={generatedTitle.isPlaceholder ? 'placeholder' : ''}>
+									{generatedTitle.title}
 								</h1>
 								<section className={description ? '' : 'placeholder'}>
 									{description || placeholderDescription}

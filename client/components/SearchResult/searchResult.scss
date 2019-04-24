@@ -8,16 +8,15 @@
 	.title {
 		font-size: 1.2em;
 		font-weight: 600;
-	}
-	.untitled {
-		font-size: 1.2em;
-		font-weight: initial;
-		font-style: italic;
-		a {
-			color: grey;
+		&.placeholder {
+			font-size: 1.2em;
+			font-weight: initial;
+			font-style: italic;
+			a {
+				color: grey;
+			}
 		}
 	}
-
 	.url {
 		margin: 0px 0px;
 		color: #1e9f40;
