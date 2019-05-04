@@ -1,3 +1,4 @@
+require('./documents');
 require('./organizations');
 require('./logout');
 require('./login');
