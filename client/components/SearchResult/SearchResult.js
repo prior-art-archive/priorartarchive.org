@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dateFormat from 'dateformat';
+import { generateDocumentTitle } from 'utilities';
 
 require('./searchResult.scss');
 
@@ -14,8 +15,6 @@ const defaultProps = {
 	isLoading: false,
 };
 
-const defaultTitle = 'Untitled';
-
 const SearchResult = function(props) {
 	if (props.isLoading) {
 		return (
@@ -27,7 +26,7 @@ const SearchResult = function(props) {
 		);
 	}
 
-	const title = props.data.title || '';
+	const generatedTitle = generateDocumentTitle(props.data.title);
 	const copyright = props.data.copyright || '';
 	const highlight = props.data.highlight || null;
 	const cpcCodes = props.data.cpcCodes || [];
@@ -49,12 +48,10 @@ const SearchResult = function(props) {
 	const fileUrl = props.data.fileUrl;
 	const documentUrl = props.data.id ? `/doc/${props.data.id}` : fileUrl;
 
-	const titleClass = title ? 'title' : 'untitled';
-	const titleText = title || defaultTitle;
 	return (
 		<div className="search-result-wrapper">
-			<div className={titleClass}>
-				<a href={documentUrl}>{titleText}</a>
+			<div className={`title ${generatedTitle.isPlaceholder ? 'placeholder' : ''}`}>
+				<a href={documentUrl}>{generatedTitle.title}</a>
 			</div>
 			{fileUrl && (
 				<a href={fileUrl} className="url">
