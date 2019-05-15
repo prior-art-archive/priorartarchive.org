@@ -6,7 +6,7 @@ import { sendPasswordResetEmail } from '../emailHelpers';
 
 app.post('/api/password-reset', (req, res) => {
 	Organization.findOne({
-		where: { slug: req.body.slug },
+		where: { email: req.body.email },
 	})
 		.then((organization) => {
 			if (!organization) {
@@ -27,6 +27,7 @@ app.post('/api/password-reset', (req, res) => {
 			const updatedOrganization = updatedOrganizationData[1][0];
 			return sendPasswordResetEmail({
 				toEmail: updatedOrganization.email,
+				slug: updatedOrganization.slug,
 				resetUrl: `https://${req.hostname}/password-reset/${
 					updatedOrganization.resetHash
 				}/${updatedOrganization.slug}`,
@@ -37,7 +38,7 @@ app.post('/api/password-reset', (req, res) => {
 		})
 		.catch((err) => {
 			console.error('Error resetting password post', err);
-			return res.status(401).json('Error resseting password.');
+			return res.status(401).json('Email address not recognized.');
 		});
 });
 
@@ -51,10 +52,9 @@ app.put('/api/password-reset', (req, res) => {
 		? { id: organization.id }
 		: { resetHash: resetHash, slug: slug };
 
-	organization
-		.findOne({
-			where: whereQuery,
-		})
+	Organization.findOne({
+		where: whereQuery,
+	})
 		.then((organizationData) => {
 			if (!organizationData) {
 				throw new Error("organization doesn't exist");
