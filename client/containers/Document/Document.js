@@ -19,29 +19,55 @@ class Document extends Component {
 		super(props);
 		this.state = {
 			title: props.documentData.title || '',
-			newTitle: props.documentData.title || '',
+			description: props.documentData.description || '',
+			documentNewData: {
+				id: props.documentData.id,
+				title: props.documentData.title || '',
+				description: props.documentData.description || '',
+			},
 			hasChanged: false,
 			putDocumentIsLoading: false,
 			putDocumentError: undefined,
 		};
 		this.onTitleChange = this.onTitleChange.bind(this);
+		this.onDescriptionChange = this.onDescriptionChange.bind(this);
 		this.handlePutDocument = this.handlePutDocument.bind(this);
+		this.handleEditDocumentDataClick = this.handleEditDocumentDataClick.bind(this);
+		this.handleCancelDocumentDataEditClick = this.handleCancelDocumentDataEditClick.bind(this);
 	}
 
 	onTitleChange(evt) {
-		this.setState({
-			newTitle: evt.target.value,
-			hasChanged: true,
-		});
+		const { documentNewData } = this.state
+		const documentNewTitle = evt.target.value
+		if (documentNewData.title !== documentNewTitle) {
+			this.setState(prevState => ({
+				documentNewData: {
+					...prevState.documentNewData,
+					title: documentNewTitle,
+				},
+				hasChanged: true,
+			}));
+		}
+	}
+
+	onDescriptionChange(evt) {
+		const { documentNewData } = this.state
+		const documentNewDescription = evt.target.value
+		if (documentNewData.description !== documentNewDescription) {
+			this.setState(prevState => ({
+				documentNewData: {
+					...prevState.documentNewData,
+					description: documentNewDescription,
+				},
+				hasChanged: true,
+			}));
+		}
 	}
 
 	handlePutDocument(evt) {
 		evt.preventDefault();
 
-		const document = {
-			id: this.props.documentData.id,
-			title: this.state.newTitle,
-		};
+		const { documentNewData } = this.state
 
 		this.setState({
 			putDocumentIsLoading: true,
@@ -51,13 +77,15 @@ class Document extends Component {
 		return apiFetch('/api/documents', {
 			method: 'PUT',
 			body: JSON.stringify({
-				document: document,
+				document: documentNewData,
 			}),
 		})
 			.then(() => {
 				this.setState({
 					putDocumentIsLoading: false,
-					title: document.title,
+					isEditingDocument: false,
+					title: documentNewData.title,
+					description: documentNewData.description,
 				});
 			})
 			.catch((err) => {
@@ -68,9 +96,116 @@ class Document extends Component {
 			});
 	}
 
+	handleEditDocumentDataClick() {
+		this.setState({
+			isEditingDocument: true
+		});
+	}
+
+	handleCancelDocumentDataEditClick() {
+		const {
+			title,
+			description,
+			hasChanged,
+		} = this.state
+
+		// TODO: Wrap this up in a default state
+		this.setState(prevState => ({
+			documentNewData: {
+				...prevState.documentNewData,
+				title: title || '',
+				description: description || '',
+			},
+			hasChanged: false,
+			isEditingDocument: false,
+		}));
+	}
+
+	renderDocumentDataHeader() {
+		const {
+			title,
+			description,
+			isEditingDocument,
+		} = this.state;
+
+		const generatedTitle = generateDocumentTitle(title);
+		const placeholderDescription = 'No description available.';
+
+		return (
+			<>
+				<h1
+					className={
+						generatedTitle.isPlaceholder ? 'placeholder' : ''
+					}
+				>
+					{`${generatedTitle.title} `}
+					<Button
+						type="button"
+						className="bp3-button"
+						text="Edit"
+						onClick={this.handleEditDocumentDataClick}
+						disabled={isEditingDocument}
+					/>
+				</h1>
+				<section className={description ? '' : 'placeholder'}>
+					{description || placeholderDescription}
+				</section>
+			</>
+		)
+	}
+
+	renderDocumentDataEditForm() {
+		const {
+			title,
+			description,
+			documentNewData,
+			hasChanged,
+			putDocumentError,
+			putDocumentIsLoading
+		} = this.state;
+
+		return (
+			<>
+				<form onSubmit={this.handlePutDocument}>
+					<InputField
+						label="Document Name"
+						isRequired={true}
+						value={documentNewData.title}
+						onChange={this.onTitleChange}
+					/>
+					<InputField
+						label="Description"
+						value={documentNewData.description}
+						onChange={this.onDescriptionChange}
+					/>
+					<InputField
+						error={putDocumentError && 'Error Saving Details'}
+					>
+						<Button
+							type="submit"
+							className="bp3-button bp3-intent-primary"
+							text="Save changes"
+							disabled={
+								!hasChanged || !documentNewData.title ||
+								(title === documentNewData.title && description === documentNewData.description)
+							}
+							loading={putDocumentIsLoading}
+						/>
+						{` or `}
+						<Button
+							type="button"
+							className="bp3-button"
+							text="Close"
+							onClick={this.handleCancelDocumentDataEditClick}
+						/>
+					</InputField>
+				</form>
+			</>
+		)
+	}
+
 	render() {
 		const {
-			description,
 			fileUrl,
 			language,
 			contentType,
@@ -78,7 +213,9 @@ class Document extends Component {
 			organizationSlug,
 		} = this.props.documentData;
 
-		const { title, newTitle, hasChanged, putDocumentError, putDocumentIsLoading } = this.state;
+		const {
+			isEditingDocument,
+		} = this.state;
 
 		const formatDate = (date) => new Date(date).toISOString().slice(0, 10);
 		const createdAt = formatDate(this.props.documentData.createdAt);
@@ -86,10 +223,9 @@ class Document extends Component {
 		const publicationDate = formatDate(this.props.documentData.publicationDate);
 		const cpcCodes = this.props.documentData.cpcCodes || [];
 
-		const generatedTitle = generateDocumentTitle(title);
-		const placeholderDescription = 'No description available.';
 		const gatewayUrl = 'https://dev-gateway.underlay.store/ipfs/';
 		const tableProps = { bordered: true, condensed: true, striped: true };
+
 		return (
 			<div id="document-container">
 				<PageWrapper
@@ -100,39 +236,7 @@ class Document extends Component {
 						<div id="flex-container" className="row">
 							<div className="col-12">
 								<header>
-									<h1
-										className={
-											generatedTitle.isPlaceholder ? 'placeholder' : ''
-										}
-									>
-										{generatedTitle.title}
-									</h1>
-									<form onSubmit={this.handleSaveDetails}>
-										<InputField
-											label="Document Name"
-											isRequired={true}
-											value={newTitle}
-											onChange={this.onTitleChange}
-										/>
-										<InputField
-											error={putDocumentError && 'Error Saving Details'}
-										>
-											<Button
-												name="create"
-												type="submit"
-												className="bp3-button bp3-intent-primary"
-												onClick={this.handlePutDocument}
-												text="Save Details"
-												disabled={
-													!hasChanged || !newTitle || title === newTitle
-												}
-												loading={putDocumentIsLoading}
-											/>
-										</InputField>
-									</form>
-									<section className={description ? '' : 'placeholder'}>
-										{description || placeholderDescription}
-									</section>
+									{isEditingDocument ? this.renderDocumentDataEditForm() : this.renderDocumentDataHeader()}
 								</header>
 								<main>
 									<div>

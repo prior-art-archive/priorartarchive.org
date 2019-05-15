@@ -16,7 +16,10 @@ app.put('/api/documents', (req, res) => {
 			}
 
 			return document
-				.update({ title: req.body.document.title }, { where: { id: req.body.document.id } })
+				.update({
+					title: req.body.document.title,
+					description: req.body.document.description,
+				}, { where: { id: req.body.document.id } })
 				.then(() => {
 					return res.status(200).json('success');
 				})
