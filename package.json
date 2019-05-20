@@ -19,6 +19,7 @@
     "prod": "npm run build-prod && npm run api-prod",
     "lint": "eslint .",
     "start": "concurrently --kill-others \"npm run api-dev\" \"npm run build-dev\"",
+    "generate-sitemap": "NODE_PATH=./client babel-node ./scripts/sitemapRunner",
     "storybook": "start-storybook -p 9001 -c .storybook -s ./"
   },
   "dependencies": {
@@ -104,6 +105,7 @@
     "node": "10.14.1"
   },
   "devDependencies": {
+    "@babel/node": "^7.2.2",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "prettier": "^1.16.4"
