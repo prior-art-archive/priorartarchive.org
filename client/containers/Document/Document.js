@@ -133,19 +133,15 @@ class Document extends Component {
 
 		return (
 			<>
-				<h1
-					className={
-						generatedTitle.isPlaceholder ? 'placeholder' : ''
-					}
-				>
+				<Button
+					type="button"
+					className="bp3-button document__edit-button"
+					text="Edit"
+					onClick={this.handleEditDocumentDataClick}
+					disabled={isEditingDocument}
+				/>
+				<h1 className={generatedTitle.isPlaceholder ? 'placeholder' : ''}>
 					{`${generatedTitle.title} `}
-					<Button
-						type="button"
-						className="bp3-button"
-						text="Edit"
-						onClick={this.handleEditDocumentDataClick}
-						disabled={isEditingDocument}
-					/>
 				</h1>
 				<section className={description ? '' : 'placeholder'}>
 					{description || placeholderDescription}
@@ -166,9 +162,9 @@ class Document extends Component {
 
 		return (
 			<>
-				<form onSubmit={this.handlePutDocument}>
+				<form className="document__edit-form" onSubmit={this.handlePutDocument}>
 					<InputField
-						label="Document Name"
+						label="Title"
 						isRequired={true}
 						value={documentNewData.title}
 						onChange={this.onTitleChange}
