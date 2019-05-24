@@ -37,10 +37,10 @@ class Document extends Component {
 	}
 
 	onTitleChange(evt) {
-		const { documentNewData } = this.state
-		const documentNewTitle = evt.target.value
+		const { documentNewData } = this.state;
+		const documentNewTitle = evt.target.value;
 		if (documentNewData.title !== documentNewTitle) {
-			this.setState(prevState => ({
+			this.setState((prevState) => ({
 				documentNewData: {
 					...prevState.documentNewData,
 					title: documentNewTitle,
@@ -51,10 +51,10 @@ class Document extends Component {
 	}
 
 	onDescriptionChange(evt) {
-		const { documentNewData } = this.state
-		const documentNewDescription = evt.target.value
+		const { documentNewData } = this.state;
+		const documentNewDescription = evt.target.value;
 		if (documentNewData.description !== documentNewDescription) {
-			this.setState(prevState => ({
+			this.setState((prevState) => ({
 				documentNewData: {
 					...prevState.documentNewData,
 					description: documentNewDescription,
@@ -67,7 +67,7 @@ class Document extends Component {
 	handlePutDocument(evt) {
 		evt.preventDefault();
 
-		const { documentNewData } = this.state
+		const { documentNewData } = this.state;
 
 		this.setState({
 			putDocumentIsLoading: true,
@@ -98,19 +98,15 @@ class Document extends Component {
 
 	handleEditDocumentDataClick() {
 		this.setState({
-			isEditingDocument: true
+			isEditingDocument: true,
 		});
 	}
 
 	handleCancelDocumentDataEditClick() {
-		const {
-			title,
-			description,
-			hasChanged,
-		} = this.state
+		const { title, description } = this.state;
 
 		// TODO: Wrap this up in a default state
-		this.setState(prevState => ({
+		this.setState((prevState) => ({
 			documentNewData: {
 				...prevState.documentNewData,
 				title: title || '',
@@ -122,11 +118,7 @@ class Document extends Component {
 	}
 
 	renderDocumentDataHeader() {
-		const {
-			title,
-			description,
-			isEditingDocument,
-		} = this.state;
+		const { title, description, isEditingDocument } = this.state;
 
 		const generatedTitle = generateDocumentTitle(title);
 		const placeholderDescription = 'No description available.';
@@ -147,7 +139,7 @@ class Document extends Component {
 					{description || placeholderDescription}
 				</section>
 			</>
-		)
+		);
 	}
 
 	renderDocumentDataEditForm() {
@@ -157,7 +149,7 @@ class Document extends Component {
 			documentNewData,
 			hasChanged,
 			putDocumentError,
-			putDocumentIsLoading
+			putDocumentIsLoading,
 		} = this.state;
 
 		return (
@@ -174,16 +166,16 @@ class Document extends Component {
 						value={documentNewData.description}
 						onChange={this.onDescriptionChange}
 					/>
-					<InputField
-						error={putDocumentError && 'Error Saving Details'}
-					>
+					<InputField error={putDocumentError && 'Error Saving Details'}>
 						<Button
 							type="submit"
 							className="bp3-button bp3-intent-primary"
 							text="Save changes"
 							disabled={
-								!hasChanged || !documentNewData.title ||
-								(title === documentNewData.title && description === documentNewData.description)
+								!hasChanged ||
+								!documentNewData.title ||
+								(title === documentNewData.title &&
+									description === documentNewData.description)
 							}
 							loading={putDocumentIsLoading}
 						/>
@@ -197,7 +189,7 @@ class Document extends Component {
 					</InputField>
 				</form>
 			</>
-		)
+		);
 	}
 
 	render() {
@@ -209,9 +201,7 @@ class Document extends Component {
 			organizationSlug,
 		} = this.props.documentData;
 
-		const {
-			isEditingDocument,
-		} = this.state;
+		const { isEditingDocument } = this.state;
 
 		const formatDate = (date) => new Date(date).toISOString().slice(0, 10);
 		const createdAt = formatDate(this.props.documentData.createdAt);
@@ -232,7 +222,9 @@ class Document extends Component {
 						<div id="flex-container" className="row">
 							<div className="col-12">
 								<header>
-									{isEditingDocument ? this.renderDocumentDataEditForm() : this.renderDocumentDataHeader()}
+									{isEditingDocument
+										? this.renderDocumentDataEditForm()
+										: this.renderDocumentDataHeader()}
 								</header>
 								<main>
 									<div>
