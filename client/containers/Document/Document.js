@@ -104,7 +104,7 @@ class Document extends Component {
 	}
 
 	handleCancelDocumentDataEditClick() {
-		const { documentData } = this.props;
+		const { documentData } = this.state;
 
 		this.setState({
 			documentNewData: pick(documentData, ['id', 'title', 'description']),
