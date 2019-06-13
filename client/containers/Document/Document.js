@@ -4,6 +4,7 @@ import PageWrapper from 'components/PageWrapper/PageWrapper';
 import { apiFetch, generateDocumentTitle, hydrateWrapper } from 'utilities';
 import { HTMLTable, Button } from '@blueprintjs/core';
 import InputField from 'components/InputField/InputField';
+import { pick } from '../../utilities';
 
 require('./document.scss');
 
@@ -18,13 +19,10 @@ class Document extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			title: props.documentData.title || '',
-			description: props.documentData.description || '',
-			documentNewData: {
-				id: props.documentData.id,
-				title: props.documentData.title || '',
-				description: props.documentData.description || '',
+			documentData: {
+				...props.documentData,
 			},
+			documentNewData: pick(props.documentData, ['id', 'title', 'description']),
 			hasChanged: false,
 			putDocumentIsLoading: false,
 			putDocumentError: undefined,
@@ -81,12 +79,15 @@ class Document extends Component {
 			}),
 		})
 			.then(() => {
-				this.setState({
+				this.setState((prevState) => ({
 					putDocumentIsLoading: false,
 					isEditingDocument: false,
-					title: documentNewData.title,
-					description: documentNewData.description,
-				});
+					documentData: {
+						...prevState.documentData,
+						title: documentNewData.title,
+						description: documentNewData.description,
+					},
+				}));
 			})
 			.catch((err) => {
 				this.setState({
@@ -103,24 +104,19 @@ class Document extends Component {
 	}
 
 	handleCancelDocumentDataEditClick() {
-		const { title, description } = this.state;
+		const { documentData } = this.props;
 
-		// TODO: Wrap this up in a default state
-		this.setState((prevState) => ({
-			documentNewData: {
-				...prevState.documentNewData,
-				title: title || '',
-				description: description || '',
-			},
+		this.setState({
+			documentNewData: pick(documentData, ['id', 'title', 'description']),
 			hasChanged: false,
 			isEditingDocument: false,
-		}));
+		});
 	}
 
 	renderDocumentDataHeader() {
-		const { title, description, isEditingDocument } = this.state;
+		const { documentData, isEditingDocument } = this.state;
 
-		const generatedTitle = generateDocumentTitle(title);
+		const generatedTitle = generateDocumentTitle(documentData.title);
 		const placeholderDescription = 'No description available.';
 
 		return (
@@ -135,8 +131,8 @@ class Document extends Component {
 				<h1 className={generatedTitle.isPlaceholder ? 'placeholder' : ''}>
 					{`${generatedTitle.title} `}
 				</h1>
-				<section className={description ? '' : 'placeholder'}>
-					{description || placeholderDescription}
+				<section className={documentData.description ? '' : 'placeholder'}>
+					{documentData.description || placeholderDescription}
 				</section>
 			</>
 		);
@@ -144,8 +140,7 @@ class Document extends Component {
 
 	renderDocumentDataEditForm() {
 		const {
-			title,
-			description,
+			documentData,
 			documentNewData,
 			hasChanged,
 			putDocumentError,
@@ -174,8 +169,8 @@ class Document extends Component {
 							disabled={
 								!hasChanged ||
 								!documentNewData.title ||
-								(title === documentNewData.title &&
-									description === documentNewData.description)
+								(documentData.title === documentNewData.title &&
+									documentData.description === documentNewData.description)
 							}
 							loading={putDocumentIsLoading}
 						/>

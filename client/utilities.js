@@ -231,3 +231,14 @@ export function generateDocumentTitle(stub) {
 	generatedTitle.isPlaceholder = generatedTitle.title === placeholderTitle;
 	return generatedTitle;
 }
+
+export function pick(object, keys) {
+	return keys.reduce((obj, key) => {
+		if (object && Object.prototype.hasOwnProperty.call(object, key)) {
+			// We need to reassign for this particular reduce(). It's cool.
+			// eslint-disable-next-line no-param-reassign
+			obj[key] = object[key];
+		}
+		return obj;
+	}, {});
+}
