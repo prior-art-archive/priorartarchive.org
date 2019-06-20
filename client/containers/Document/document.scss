@@ -1,6 +1,16 @@
 #document-container {
 	.page-content {
 		padding-bottom: 2em;
+
+		.document__edit-form {
+			margin-top: 1.8em;
+		}
+
+		.document__edit-button {
+			float: right;
+			margin-left: 1em;
+		}
+
 		h1,
 		h2 {
 			margin-top: 1em;
