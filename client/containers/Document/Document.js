@@ -19,10 +19,10 @@ class Document extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			documentData: {
+			data: {
 				...props.documentData,
 			},
-			documentNewData: pick(props.documentData, ['id', 'title', 'description']),
+			newData: pick(props.documentData, ['id', 'title', 'description']),
 			hasChanged: false,
 			putDocumentIsLoading: false,
 			putDocumentError: undefined,
@@ -35,13 +35,13 @@ class Document extends Component {
 	}
 
 	onTitleChange(evt) {
-		const { documentNewData } = this.state;
-		const documentNewTitle = evt.target.value;
-		if (documentNewData.title !== documentNewTitle) {
+		const { newData } = this.state;
+		const title = evt.target.value;
+		if (newData.title !== title) {
 			this.setState((prevState) => ({
-				documentNewData: {
-					...prevState.documentNewData,
-					title: documentNewTitle,
+				newData: {
+					...prevState.newData,
+					title: title,
 				},
 				hasChanged: true,
 			}));
@@ -49,13 +49,13 @@ class Document extends Component {
 	}
 
 	onDescriptionChange(evt) {
-		const { documentNewData } = this.state;
-		const documentNewDescription = evt.target.value;
-		if (documentNewData.description !== documentNewDescription) {
+		const { newData } = this.state;
+		const description = evt.target.value;
+		if (newData.description !== description) {
 			this.setState((prevState) => ({
-				documentNewData: {
-					...prevState.documentNewData,
-					description: documentNewDescription,
+				newData: {
+					...prevState.newData,
+					description: description,
 				},
 				hasChanged: true,
 			}));
@@ -65,7 +65,7 @@ class Document extends Component {
 	handlePutDocument(evt) {
 		evt.preventDefault();
 
-		const { documentNewData } = this.state;
+		const { newData } = this.state;
 
 		this.setState({
 			putDocumentIsLoading: true,
@@ -75,17 +75,17 @@ class Document extends Component {
 		return apiFetch('/api/documents', {
 			method: 'PUT',
 			body: JSON.stringify({
-				document: documentNewData,
+				document: newData,
 			}),
 		})
 			.then(() => {
 				this.setState((prevState) => ({
 					putDocumentIsLoading: false,
 					isEditingDocument: false,
-					documentData: {
-						...prevState.documentData,
-						title: documentNewData.title,
-						description: documentNewData.description,
+					data: {
+						...prevState.data,
+						title: newData.title,
+						description: newData.description,
 					},
 				}));
 			})
@@ -104,19 +104,19 @@ class Document extends Component {
 	}
 
 	handleCancelDocumentDataEditClick() {
-		const { documentData } = this.state;
+		const { data } = this.state;
 
 		this.setState({
-			documentNewData: pick(documentData, ['id', 'title', 'description']),
+			newData: pick(data, ['id', 'title', 'description']),
 			hasChanged: false,
 			isEditingDocument: false,
 		});
 	}
 
 	renderDocumentDataHeader() {
-		const { documentData, isEditingDocument } = this.state;
+		const { data, isEditingDocument } = this.state;
 
-		const generatedTitle = generateDocumentTitle(documentData.title);
+		const generatedTitle = generateDocumentTitle(data.title);
 		const placeholderDescription = 'No description available.';
 
 		return (
@@ -131,21 +131,15 @@ class Document extends Component {
 				<h1 className={generatedTitle.isPlaceholder ? 'placeholder' : ''}>
 					{`${generatedTitle.title} `}
 				</h1>
-				<section className={documentData.description ? '' : 'placeholder'}>
-					{documentData.description || placeholderDescription}
+				<section className={data.description ? '' : 'placeholder'}>
+					{data.description || placeholderDescription}
 				</section>
 			</>
 		);
 	}
 
 	renderDocumentDataEditForm() {
-		const {
-			documentData,
-			documentNewData,
-			hasChanged,
-			putDocumentError,
-			putDocumentIsLoading,
-		} = this.state;
+		const { data, newData, hasChanged, putDocumentError, putDocumentIsLoading } = this.state;
 
 		return (
 			<>
@@ -153,12 +147,12 @@ class Document extends Component {
 					<InputField
 						label="Title"
 						isRequired={true}
-						value={documentNewData.title}
+						value={newData.title}
 						onChange={this.onTitleChange}
 					/>
 					<InputField
 						label="Description"
-						value={documentNewData.description}
+						value={newData.description}
 						onChange={this.onDescriptionChange}
 					/>
 					<InputField error={putDocumentError && 'Error Saving Details'}>
@@ -168,9 +162,9 @@ class Document extends Component {
 							text="Save changes"
 							disabled={
 								!hasChanged ||
-								!documentNewData.title ||
-								(documentData.title === documentNewData.title &&
-									documentData.description === documentNewData.description)
+								!newData.title ||
+								(data.title === newData.title &&
+									data.description === newData.description)
 							}
 							loading={putDocumentIsLoading}
 						/>
