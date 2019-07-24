@@ -83,12 +83,12 @@ app.post('/api/search', (req, res) => {
 									aggs: {
 										source: { terms: { field: 'organizationId' } },
 										fileType: { terms: { field: 'contentType' } },
-										dateRange: {
-											auto_date_histogram: {
-												field: 'publicationDate',
-												buckets: 5,
-											},
-										},
+										// dateRange: {
+										// 	auto_date_histogram: {
+										// 		field: 'publicationDate',
+										// 		buckets: 5,
+										// 	},
+										// },
 									},
 									// sort: { [req.body.sort]: 'asc' },
 									...payload,
@@ -148,7 +148,7 @@ app.post('/api/search', (req, res) => {
 								query: query,
 								operator: operator,
 								aggregations: {
-									dateRange: response.aggregations.dateRange,
+									// dateRange: response.aggregations.dateRange,
 									fileType: response.aggregations.fileType,
 									source: { buckets: namedBuckets, ...rest },
 								},
