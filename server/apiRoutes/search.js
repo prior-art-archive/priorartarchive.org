@@ -31,7 +31,12 @@ app.post('/api/search', (req, res) => {
 			(err, data) => {
 				new Promise(async function(resolve, reject) {
 					if (data && data.StatusCode === 200) {
-						const payload = JSON.parse(JSON.parse(data.Payload));
+						const payloadWrapper = JSON.parse(data.Payload);
+						if (payloadWrapper.errorMessage) {
+							reject(JSON.stringify(data));
+							return;
+						}
+						const payload = JSON.parse(payloadWrapper);
 						if (fileType.length || source.length) {
 							if (!payload.query.bool.filter) payload.query.bool.filter = [];
 							if (fileType.length) {
