@@ -20,6 +20,7 @@
     "lint": "eslint .",
     "start": "concurrently --kill-others \"npm run api-dev\" \"npm run build-dev\"",
     "generate-sitemap": "NODE_PATH=./client babel-node ./scripts/sitemapRunner",
+    "load-cpc": "NODE_PATH=./client babel-node ./scripts/cpcRunner",
     "storybook": "start-storybook -p 9001 -c .storybook -s ./"
   },
   "dependencies": {

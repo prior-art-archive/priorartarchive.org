@@ -10,3 +10,6 @@ process.env.MAILGUN_API_KEY = '<MAILGUN_API_KEY>';
 // Leave blank to skip sitemap generation
 process.env.SITEMAP_DESTINATION_S3_BUCKET = ''
 process.env.SITEMAP_DESTINATION_PATH = ''
+
+// The URL that will point to the latest generated CPC json
+process.env.CPC_RESULT_POINTER_URL = '<CPC_RESULT_POINTER_URL>';
