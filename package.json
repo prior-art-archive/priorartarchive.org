@@ -94,7 +94,7 @@
     "throng": "^4.0.0",
     "tmp-promise": "^1.0.5",
     "uuid": "^3.3.0",
-    "validator": "^10.9.0",
+    "validator": "^13.7.0",
     "webpack": "^4.27.1",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
