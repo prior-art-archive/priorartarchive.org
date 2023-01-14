@@ -97,7 +97,7 @@
     "validator": "^10.9.0",
     "webpack": "^4.27.1",
     "webpack-bundle-analyzer": "^3.0.3",
-    "webpack-cli": "^3.1.2",
+    "webpack-cli": "^3.3.12",
     "webpack-manifest-plugin": "^2.0.4"
   },
   "engines": {
